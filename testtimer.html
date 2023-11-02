@@ -12,7 +12,7 @@
       font-family: sans-serif;
       margin: 0;
       padding: 0;
-      height: 85vh;
+      height: 75vh;
     }
 
     .clock {
@@ -110,10 +110,10 @@ div {
 </style>
 </head>
 <body bgcolor="#000000">
-<div id="demo"></div>
+<div id="1"></div>
 <script>
 // 改日期
-var countDownDate = new Date("may 18, 2024").getTime();
+var countDownDate1 = new Date("November 08, 2023").getTime();
 
 // Update the count down every 1 second
 var x = setInterval(function() {
@@ -122,7 +122,7 @@ var x = setInterval(function() {
   var now = new Date().getTime();
     
   // Find the distance between now and the count down date
-  var distance = countDownDate - now;
+  var distance = countDownDate1 - now;
     
   // Time calculations for days, hours, minutes and seconds
   var days = Math.floor(distance / (1000 * 60 * 60 * 24));
@@ -131,18 +131,17 @@ var x = setInterval(function() {
   var seconds = Math.floor((distance % (1000 * 60)) / 1000);
     
   // Output the result in an element with id="demo"
-  document.getElementById("demo").innerHTML = "會考還剩" + days + "天" ;
+  document.getElementById("1").innerHTML = "第一次模擬考還剩" + days + "天" ;
     
   // If the count down is over, write some text 
   if (distance < 0) {
     clearInterval(x);
-    document.getElementById("demo").innerHTML = "";
+    document.getElementById("1").innerHTML = "時間已到";
   }
 }, 1000);
 </script>
 </body>
 </html>
-
 
 <!DOCTYPE HTML>
 <html>
@@ -159,10 +158,10 @@ div {
 </style>
 </head>
 <body bgcolor="#000000">
-<div id="demo2"></div>
+<div id="2"></div>
 <script>
 // 改日期
-var countDownDate = new Date("may 18, 2024").getTime();
+var countDownDate2 = new Date("May 18, 202").getTime();
 
 // Update the count down every 1 second
 var x = setInterval(function() {
@@ -171,7 +170,7 @@ var x = setInterval(function() {
   var now = new Date().getTime();
     
   // Find the distance between now and the count down date
-  var distance = countDownDate - now;
+  var distance = countDownDate2 - now;
     
   // Time calculations for days, hours, minutes and seconds
   var days = Math.floor(distance / (1000 * 60 * 60 * 24));
@@ -180,14 +179,24 @@ var x = setInterval(function() {
   var seconds = Math.floor((distance % (1000 * 60)) / 1000);
     
   // Output the result in an element with id="demo"
-  document.getElementById("demo2").innerHTML = "會考還剩" + days + "天" ;
+  document.getElementById("2").innerHTML = "第一次模擬考還剩" + days + "天" ;
     
   // If the count down is over, write some text 
   if (distance < 0) {
     clearInterval(x);
-    document.getElementById("demo2").innerHTML = "";
+    document.getElementById("2").innerHTML = "時間已到";
   }
 }, 1000);
 </script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
