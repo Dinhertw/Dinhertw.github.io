@@ -1,5 +1,193 @@
-<div style="left:0; width:100%; height:0; position:relative; padding-bottom:25%; margin:0 auto"><iframe src="https://www.tickcounter.com/widget/countdown/4565968" style="top:0; left:0; width:100%; height:100%; position:absolute; border:0; overflow:hidden" title="第一次模擬考倒數計時"></iframe></div> 
-<! 一模擬 https://www.tickcounter.com/countdown/4565968/ >
-<div style="left:0; width:100%; height:0; position:relative; padding-bottom:25%; margin:0 auto"><iframe src="https://www.tickcounter.com/widget/countdown/4566102" style="top:0; left:0; width:100%; height:100%; position:absolute; border:0; overflow:hidden" title="會考倒數計時"></iframe></div>
-<! 會考 https://www.tickcounter.com/countdown/4566102/ >
 
+<!DOCTYPE html>
+<html lang="unknown">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>digital clock - by Dinher</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 0;
+      padding: 0;
+      height: 85vh;
+    }
+
+    .clock {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background-color: #000000;
+    }
+
+    .time {
+      font-size: 250px;
+      font-weight: bold;
+      color: #fff;
+    }
+
+    .date-time {
+      font-size: 60px;
+      color: #fff;
+    }
+
+    @media screen and (max-width: 768px) {
+      .time {
+        font-size: 50px;
+      }
+    }
+
+    @media screen and (max-width: 768px) {
+      .date-time {
+        font-size: 15px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="clock">
+    <div class="time"></div>
+    <div class="date-time"></div>
+  </div>
+
+  <script>
+    var time = document.querySelector(".time");
+    var dateTime = document.querySelector(".date-time");
+
+    function updateClock() {
+      // Get the current time, day , month and year
+      var now = new Date();
+      var hours = now.getHours();
+      var minutes = now.getMinutes();
+      var seconds = now.getSeconds();
+      var day = now.getDay();
+      var date = now.getDate();
+      var month = now.getMonth();
+      var year = now.getFullYear();
+
+      // store day and month name in an array
+      var dayNames = ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"];
+      var monthNames = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"];
+
+      // format date and time
+      hours = hours % 24 || 24;
+      minutes = minutes < 10 ? "0" + minutes : minutes;
+      seconds = seconds < 10 ? "0" + seconds : seconds;
+      date = date < 10 ? "0" + date : date;
+
+      // display date and time
+      var period = hours < 12 ? "" : "";
+      time.innerHTML = hours + ":" + minutes + ":" + seconds + " " + period;
+      dateTime.innerHTML = year + "年" + monthNames[month] + "月" + date + "日" + dayNames[day] ;
+    }
+
+    updateClock();
+    setInterval(updateClock, 1000);
+  </script>
+</body>
+
+</html>
+
+
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+div {
+  text-align: center;
+  font-size: 60px;
+  margin-top: 0px;
+  color: #fff;
+  background-color: #000000;
+}
+</style>
+</head>
+<body>
+<div id="demo"></div>
+<script>
+// 改日期
+var countDownDate = new Date("may 18, 2024").getTime();
+
+// Update the count down every 1 second
+var x = setInterval(function() {
+
+  // Get today's date and time
+  var now = new Date().getTime();
+    
+  // Find the distance between now and the count down date
+  var distance = countDownDate - now;
+    
+  // Time calculations for days, hours, minutes and seconds
+  var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+  var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+  var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+    
+  // Output the result in an element with id="demo"
+  document.getElementById("demo").innerHTML = "會考還剩" + days + "天" ;
+    
+  // If the count down is over, write some text 
+  if (distance < 0) {
+    clearInterval(x);
+    document.getElementById("demo").innerHTML = "";
+  }
+}, 1000);
+</script>
+</body>
+</html>
+
+
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+div {
+  text-align: center;
+  font-size: 60px;
+  margin-top: 0px;
+  color: #fff;
+  background-color: #000000;
+}
+</style>
+</head>
+<body>
+<div id="demo2"></div>
+<script>
+// 改日期
+var countDownDate = new Date("may 18, 2024").getTime();
+
+// Update the count down every 1 second
+var x = setInterval(function() {
+
+  // Get today's date and time
+  var now = new Date().getTime();
+    
+  // Find the distance between now and the count down date
+  var distance = countDownDate - now;
+    
+  // Time calculations for days, hours, minutes and seconds
+  var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+  var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+  var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+    
+  // Output the result in an element with id="demo"
+  document.getElementById("demo2").innerHTML = "會考還剩" + days + "天" ;
+    
+  // If the count down is over, write some text 
+  if (distance < 0) {
+    clearInterval(x);
+    document.getElementById("demo2").innerHTML = "";
+  }
+}, 1000);
+</script>
+</body>
+</html>
