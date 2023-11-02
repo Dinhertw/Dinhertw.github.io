@@ -102,7 +102,7 @@ div {
 <div id="1"></div>
 <script>
 // 改日期
-var countDownDate1 = new Date("November 08, 2023").getTime();
+var countDownDate1 = new Date("November 02, 2023").getTime();
 
 // Update the count down every 1 second
 var x = setInterval(function() {
@@ -111,18 +111,18 @@ var x = setInterval(function() {
   var now = new Date().getTime();
     
   // Find the distance between now and the count down date
-  var distance = countDownDate1 - now;
+  var distance1 = countDownDate1 - now;
     
   // Time calculations for days, hours, minutes and seconds
-  var days = Math.floor(distance / (1000 * 60 * 60 * 24)+1);
+  var days = Math.floor(distance1 / (1000 * 60 * 60 * 24)+1);
     
   // Output the result in an element with id="demo"
   document.getElementById("1").innerHTML = "第一次模擬考還剩" + days + "天" ;
     
   // If the count down is over, write some text 
-  if (distance < 0) {
+  if (distance1 < 0) {
     clearInterval(x);
-    document.getElementById("1").innerHTML = "時間已到";
+    document.getElementById("1").innerHTML = "";
   }
 }, 1000);
 </script>
@@ -150,24 +150,24 @@ div {
 var countDownDate2 = new Date("May 18, 2024").getTime();
 
 // Update the count down every 1 second
-var x = setInterval(function() {
+var y = setInterval(function() {
 
   // Get today's date and time
   var now = new Date().getTime();
     
   // Find the distance between now and the count down date
-  var distance = countDownDate2 - now;
+  var distance2 = countDownDate2 - now;
     
   // Time calculations for days, hours, minutes and seconds
-  var days = Math.floor(distance / (1000 * 60 * 60 * 24)+1);
+  var days = Math.floor(distance2 / (1000 * 60 * 60 * 24)+1);
   
   // Output the result in an element with id="demo"
   document.getElementById("2").innerHTML = "會考還剩" + days + "天" ;
     
   // If the count down is over, write some text 
-  if (distance < 0) {
-    clearInterval(x);
-    document.getElementById("2").innerHTML = "時間已到";
+  if (distance2 < 0) {
+    clearInterval(y);
+    document.getElementById("2").innerHTML = "";
   }
 }, 1000);
 </script>
