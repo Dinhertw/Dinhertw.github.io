@@ -12,7 +12,7 @@
       font-family: sans-serif;
       margin: 0;
       padding: 0;
-      height: 75vh;
+      height: 80vh;
     }
 
     .clock {
@@ -36,17 +36,6 @@
       color: #fff;
     }
 
-    @media screen and (max-width: 768px) {
-      .time {
-        font-size: 50px;
-      }
-    }
-
-    @media screen and (max-width: 768px) {
-      .date-time {
-        font-size: 15px;
-      }
-    }
   </style>
 </head>
 
@@ -125,10 +114,7 @@ var x = setInterval(function() {
   var distance = countDownDate1 - now;
     
   // Time calculations for days, hours, minutes and seconds
-  var days = Math.floor(distance / (1000 * 60 * 60 * 24));
-  var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-  var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-  var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+  var days = Math.floor(distance / (1000 * 60 * 60 * 24)+1);
     
   // Output the result in an element with id="demo"
   document.getElementById("1").innerHTML = "第一次模擬考還剩" + days + "天" ;
@@ -173,13 +159,10 @@ var x = setInterval(function() {
   var distance = countDownDate2 - now;
     
   // Time calculations for days, hours, minutes and seconds
-  var days = Math.floor(distance / (1000 * 60 * 60 * 24));
-  var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-  var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-  var seconds = Math.floor((distance % (1000 * 60)) / 1000);
-    
+  var days = Math.floor(distance / (1000 * 60 * 60 * 24)+1);
+  
   // Output the result in an element with id="demo"
-  document.getElementById("2").innerHTML = "第一次模擬考還剩" + days + "天" ;
+  document.getElementById("2").innerHTML = "會考還剩" + days + "天" ;
     
   // If the count down is over, write some text 
   if (distance < 0) {
@@ -191,6 +174,16 @@ var x = setInterval(function() {
 </body>
 </html>
 
+
+<!   
+  // Time 天 時 分 秒
+  var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+  var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+  var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+  
+  
+  >
 
 
 
