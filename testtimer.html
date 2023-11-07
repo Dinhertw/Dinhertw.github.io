@@ -195,7 +195,7 @@
   <div id="2"></div>
   <script>
   // 改日期
-  var countDownDate2 = new Date("November 08, 2023").getTime();
+  var countDownDate2 = new Date("December 21, 2023").getTime();
 
   // Update the count down every 1 second
   var y = setInterval(function() {
@@ -210,12 +210,12 @@
     var days = Math.floor(distance2 / (1000 * 60 * 60 * 24)+1);
     
     // Output the result in an element with id="demo"
-    document.getElementById("2").innerHTML = "第一次模擬考還剩" + days + "天" ;
+    document.getElementById("2").innerHTML = "第二次模擬考還剩" + days + "天" ;
       
     // If the count down is over, write some text 
     if (distance2 < 0) {
       clearInterval(y);
-      document.getElementById("2").innerHTML = "第一次模擬考還剩0天";
+      document.getElementById("2").innerHTML = " ";
     }
   }, 1000);
   </script>
@@ -251,7 +251,7 @@
     // If the count down is over, write some text 
     if (distance3 < 0) {
       clearInterval(y);
-      document.getElementById("3").innerHTML = "會考還剩0天";
+      document.getElementById("3").innerHTML = " ";
     }
   }, 1000);
   </script>
