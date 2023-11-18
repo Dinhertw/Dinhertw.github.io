@@ -29,9 +29,15 @@
       font-weight: bold;
       color: #fff;
     }
+    
+    .period {
+      font-size: 50px;
+      color: #fff;
+      margin-left: 25px; /* Add some margin for separation */
+    }
 
     .date-time {
-      font-size: 60px;
+      font-size: 55px;
       color: #fff;
     }
 
@@ -43,7 +49,14 @@
 
     @media screen and (max-width: 768px) {
       .date-time {
+        font-size: 20px;
+      }
+    }
+
+        @media screen and (max-width: 768px) {
+      .period {
         font-size: 15px;
+        margin-left: 5px;
       }
     }
   </style>
@@ -51,8 +64,8 @@
 
 <body>
   <div class="clock">
-    <div class="time"></div>
-    <div class="date-time"></div>
+    <div class="time">10:35:13<span class="period">AM</span></div>
+    <div class="date-time">2023年11月18日 星期六</div>
   </div>
 
   <script>
@@ -60,7 +73,7 @@
     var dateTime = document.querySelector(".date-time");
 
     function updateClock() {
-      // Get the current time, day , month and year
+      // Get the current time, day, month, and year
       var now = new Date();
       var hours = now.getHours();
       var minutes = now.getMinutes();
@@ -70,24 +83,26 @@
       var month = now.getMonth();
       var year = now.getFullYear();
 
-      // store day and month name in an array
-      var dayNames = ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"];
+      // Store day and month names in an array
+      var dayNames = [" 星期日", " 星期一", " 星期二", " 星期三", " 星期四", " 星期五", " 星期六"];
       var monthNames = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"];
 
-      // format date and time
-      hours = hours % 24 || 24;
+      // Format date and time
+      var period = hours < 12 ? "AM" : "PM";
+      hours = hours % 12 || 12; // Convert to 12-hour format
       minutes = minutes < 10 ? "0" + minutes : minutes;
       seconds = seconds < 10 ? "0" + seconds : seconds;
       date = date < 10 ? "0" + date : date;
 
-      // display date and time
-      var period = hours < 12 ? "" : "";
-      time.innerHTML = hours + ":" + minutes + ":" + seconds + " " + period;
-      dateTime.innerHTML = year + "年" + monthNames[month] + "月" + date + "日" + dayNames[day] ;
+      // Display date and time
+      time.innerHTML = hours + ":" + minutes + ":" + seconds;
+      time.insertAdjacentHTML('beforeend', '<span class="period">' + period + '</span>');
+      dateTime.innerHTML = year + "年" + monthNames[month] + "月" + date + "日" + dayNames[day];
     }
 
     updateClock();
-    setInterval(updateClock, 1000);
+    setInterval(updateClock, 100); // Set interval to 1000ms (1 second)
+  </script>
   </script>
 </body>
 
