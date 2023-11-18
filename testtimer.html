@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-  <style>
+<!-- saved from url=(0036)https://dinhertw.github.io/testtimer -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><style>
     body {
       font-family: sans-serif;
       margin: 0;
@@ -29,10 +30,10 @@
 	}
   </style>
 
-  <!DOCTYPE html>
-  <html lang="en">
-  <head>
-      <meta charset="UTF-8">
+  
+  
+  
+      
       <style>
           /* Loading Screen的樣式 */
           .loading-screen {
@@ -55,11 +56,11 @@
       </style>
   </head>
   <body>
-      <div class="loading-screen" id="loadingScreen">
+      <div class="loading-screen" id="loadingScreen" style="display: none;">
           <div class="loading-text">Loading...</div>
       </div>
 
-      <div class="content" id="content" style="display: none;">
+      <div class="content" id="content" style="display: block;">
         <script>
           window.addEventListener('load', function () {
               // 當整個網頁及其內容都載入完成後，隱藏 loading 畫面
@@ -73,10 +74,10 @@
 
 
 
-<!DOCTYPE html>
-<html lang="unknown">
-<head>
-  <meta charset="UTF-8">
+
+
+
+  
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>testtimer - by Dinher</title>
@@ -118,12 +119,12 @@
       color: #fff;
     }
   </style>
-</head>
 
-<body>
+
+
   <div class="clock">
-    <div class="time"></div>
-    <div class="date-time"></div>
+    <div class="time">10:35:13<span class="period">AM</span></div>
+    <div class="date-time">2023年11月18日 星期六</div>
   </div>
 
   <script>
@@ -159,20 +160,20 @@
     }
 
     updateClock();
-    setInterval(updateClock, 0); // Set interval to 1000ms (1 second)
+    setInterval(updateClock, 100); // Set interval to 1000ms (1 second)
   </script>
-</body>
-
-</html>
 
 
 
-  <!DOCTYPE HTML>
-  <html>
-  <head>
+
+
+
+  
+  
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  </head>
-  <div id="1"></div>
+  
+  <div id="1">第二次模擬考(1-4冊)還剩33天</div>
   <script>
 // 改日期
 var countDownDate1 = new Date("December 21, 2023").getTime();
@@ -192,18 +193,18 @@ var y = setInterval(function() {
     // Output the result in an element with id="1"
     document.getElementById("1").innerHTML = "第二次模擬考(1-4冊)還剩" + days + "天" ;
        
-}, 0);
+}, 1000);
   </script>
 
 
 
 
-  <!DOCTYPE HTML>
-  <html>
-  <head>
+  
+  
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  </head>
-  <div id="2"></div>
+  
+  <div id="2">會考還剩182天</div>
   <script>
   // 改日期
   var countDownDate2 = new Date("May 18, 2024").getTime();
@@ -222,8 +223,9 @@ var y = setInterval(function() {
     
     // Output the result in an element with id="demo"
     document.getElementById("2").innerHTML = "會考還剩" + days + "天" ;
-	}, 0);
+	}, 1000);
       
   </script>
 
 <h3>點擊螢幕任意處或任意移動滑鼠即可離開</h3>
+</div></body></html>
