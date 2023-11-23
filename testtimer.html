@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<!-- saved from url=(0041)https://dinhertw.github.io/testtimer.html -->
 <html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><style>
     body {
       font-family: sans-serif;
@@ -9,7 +8,7 @@
       background-color: #000000; 
     }
 
-    /* 整個葉面背景 */
+    /* 背景 */
     /* ... */
 
     div {
@@ -122,46 +121,47 @@
 
 
 
-  <div class="clock">
+<div class="clock">
     <div class="time">7:31:27<span class="period">PM</span></div>
     <div class="date-time">2023年11月20日 星期一</div>
-  </div>
+</div>
 
-  <script>
+<script>
     var time = document.querySelector(".time");
     var dateTime = document.querySelector(".date-time");
 
     function updateClock() {
-      // Get the current time, day, month, and year
-      var now = new Date();
-      var hours = now.getHours();
-      var minutes = now.getMinutes();
-      var seconds = now.getSeconds();
-      var day = now.getDay();
-      var date = now.getDate();
-      var month = now.getMonth();
-      var year = now.getFullYear();
+        // Get the current time, day, month, and year
+        var now = new Date();
+        var hours = now.getHours();
+        var minutes = now.getMinutes();
+        var seconds = now.getSeconds();
+        var day = now.getDay();
+        var date = now.getDate();
+        var month = now.getMonth();
+        var year = now.getFullYear();
 
-      // Store day and month names in an array
-      var dayNames = [" 星期日", " 星期一", " 星期二", " 星期三", " 星期四", " 星期五", " 星期六"];
-      var monthNames = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"];
+        // Store day and month names in an array
+        var dayNames = [" 星期日", " 星期一", " 星期二", " 星期三", " 星期四", " 星期五", " 星期六"];
+        var monthNames = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"];
 
-      // Format date and time
-      var period = hours < 12 ? "AM" : "PM";
-      hours = hours % 12 || 12; // Convert to 12-hour format
-      minutes = minutes < 10 ? "0" + minutes : minutes;
-      seconds = seconds < 10 ? "0" + seconds : seconds;
-      date = date < 10 ? "0" + date : date;
+        // Format date and time
+        var period = hours < 12 ? "AM" : "PM";
+        hours = hours % 12 || 12; // Convert to 12-hour format
+        minutes = minutes < 10 ? "0" + minutes : minutes;
+        seconds = seconds < 10 ? "0" + seconds : seconds;
+        hours = hours < 10 ? "0" + hours : hours; // Ensure hours have two digits
 
-      // Display date and time
-      time.innerHTML = hours + ":" + minutes + ":" + seconds;
-      time.insertAdjacentHTML('beforeend', '<span class="period">' + period + '</span>');
-      dateTime.innerHTML = year + "年" + monthNames[month] + "月" + date + "日" + dayNames[day];
+        // Display date and time
+        time.innerHTML = hours + ":" + minutes + ":" + seconds;
+        time.insertAdjacentHTML('beforeend', '<span class="period">' + period + '</span>');
+        dateTime.innerHTML = year + "年" + monthNames[month] + "月" + date + "日" + dayNames[day];
     }
 
     updateClock();
-    setInterval(updateClock, 0); 
-  </script>
+    setInterval(updateClock, 0); // Set interval to 1000 milliseconds (1 second)
+</script>
+
 
 
 
@@ -229,4 +229,4 @@ var y = setInterval(function() {
 
 <h3>點擊螢幕任意處或任意移動滑鼠即可離開</h3>
 </div>
-</body><div id="vimeo-record-extension"></div></html>
+</body>
