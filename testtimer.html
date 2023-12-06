@@ -1,4 +1,6 @@
 <!DOCTYPE html>
+<!-- saved from url=(0041)https://dinhertw.github.io/testtimer.html -->
+
 <html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><style>
     body {
       font-family: sans-serif;
@@ -13,8 +15,8 @@
 
     div {
     text-align: center;
-    font-size: 55px;
-    margin-top: 0px;
+    font-size: 50px;
+    margin-top: 15px;
     color: #ffffff;
   }
   /* 倒計時格式 */
@@ -23,7 +25,7 @@
       font-family: sans-serif;
       text-align: center;
       font-size: 25px;
-      margin-top: 50px;
+      margin-top: 25px;
       color: #ffffff; 
 	  font-weight: 100;
 	}
@@ -55,23 +57,6 @@
       </style>
   </head>
   <body>
-      <div class="loading-screen" id="loadingScreen" style="display: none;">
-          <div class="loading-text">Loading...</div>
-      </div>
-
-      <div class="content" id="content" style="display: block;">
-        <script>
-          window.addEventListener('load', function () {
-              // 當整個網頁及其內容都載入完成後，隱藏 loading 畫面
-              setTimeout(function() {
-                  document.getElementById('loadingScreen').style.display = 'none';
-                  document.getElementById('content').style.display = 'block';
-              }, 0); 
-          });
-        </script>
-
-
-
 
 
 
@@ -96,7 +81,7 @@
       justify-content: flex-start;
       align-items: center;
       color: #fff;
-      margin-top: 125px;  
+      margin-top: 120px;  
     }
 
     .time {
@@ -122,8 +107,8 @@
 
 
 <div class="clock">
-    <div class="time"><span class="period">PM</span></div>
-    <div class="date-time"></div>
+    <div class="time"><br><span class="period">AM</span></div>
+    <div class="date-time"><br></div>
 </div>
 
 <script>
@@ -173,10 +158,10 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <div id="1"></div>
+  <div id="1"><br></div>
   <script>
 // 改日期
-var countDownDate1 = new Date("December 21, 2023").getTime();
+var countDownDate1 = new Date("2023/12/21").getTime();
 
 // Update the count down every 1 second
 var y = setInterval(function() {
@@ -204,10 +189,10 @@ var y = setInterval(function() {
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <div id="2"></div>
+  <div id="2"><br></div>
   <script>
   // 改日期
-  var countDownDate2 = new Date("May 18, 2024").getTime();
+  var countDownDate2 = new Date("2024/5/18").getTime();
 
   // Update the count down every 1 second
   var y = setInterval(function() {
@@ -226,7 +211,12 @@ var y = setInterval(function() {
 	}, 0);
       
   </script>
+  
 
-<h3>點擊螢幕任意處或任意移動滑鼠即可離開</h3>
+<h3>
+<hr size="0.3px" align="center" width="75%">
+點擊螢幕任意處或任意移動滑鼠即可離開</h3>
 </div>
-</body>
+
+
+<meta http-equiv="refresh" content="3600;url=">
