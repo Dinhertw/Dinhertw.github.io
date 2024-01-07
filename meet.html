@@ -2,28 +2,15 @@
 <html>
 <head>
   <style>
-    body {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      margin: 0;
-    }
-
-    .link-container {
-      text-align: center;
-    }
-
     a {
       font-family: sans-serif;
       font-size: 100px;
       text-decoration: none;
-      display: inline-block;
-      margin: 10px 0;
-      padding: 20px;
-      border-radius: 10px;
-      text-align: center;
-      width: 300px;
+      display: inline-block; /* 改為 inline-block 以應用 padding 和 border */
+      margin: 10px 0; /* 添加一些邊距 */
+      padding: 20px; /* 添加一些內邊距 */
+      border-radius: 10px; /* 圓角 */
+      text-align: center; /* 文字居中 */
     }
 
     .black-background {
@@ -36,23 +23,13 @@
       border: 3px solid grey;
       color: black;
     }
-
-    @media (max-width: 600px) {
-      a {
-        width: 80%; /* 在小屏幕上設置更小的寬度 */
-        font-size: 50px; /* 在小屏幕上設置更小的字體大小 */
-      }
-    }
   </style>
   <link rel="shortcut icon" href="https://fonts.gstatic.com/s/i/productlogos/meet_2020q4/v1/web-96dp/logo_meet_2020q4_color_2x_web_96dp.png" />
-  <title>meet list - By Dinher</title>
 </head>
 <body>
-  <div class="link-container">
-    <a href="https://meet.google.com/kjq-uugj-zie" class="black-background">meet1</a><br><br>
-    <a href="https://meet.google.com/rkf-rpib-ger" class="grey-border">meet2</a><br><br>
-    <a href="https://meet.google.com/sku-vznz-ssq" class="black-background">meet3</a><br><br>
-    <a href="https://meet.new/" class="grey-border">new meet</a>
-  </div>
+  <a href="https://meet.google.com/kjq-uugj-zie" class="black-background">meet1</a><br><br>
+  <a href="https://meet.google.com/rkf-rpib-ger" class="grey-border">meet2</a><br><br>
+  <a href="https://meet.google.com/sku-vznz-ssq" class="black-background">meet3</a><br><br>
+  <a href="https://meet.new/" class="grey-border">new meet</a>
 </body>
 </html>
