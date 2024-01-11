@@ -12,5 +12,10 @@ href="https://dinhertw.github.io/meet.html">meet</a><br>
 <a
 href="https://docs.google.com/spreadsheets/d/1JuceMx4NoLQIbrUO6jerKfZGOoJw-CwaR6lfP4oPLvo/edit?usp=sharing">成績</a><br>
 
+
+<a
+href="https://docs.google.com/spreadsheets/d/1nRVzZQ7WW3bz-qbIh7f4TaA-IGgdhXYjp98uWIpxWyQ/edit?usp=sharing">段考時程表</a><br>
+
+
 <a
 href="https://digitalmaster.knsh.com.tw/all/selector/index.html">康軒選號器</a><br>
