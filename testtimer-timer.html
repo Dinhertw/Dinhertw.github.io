@@ -1,87 +1,59 @@
-
 <!DOCTYPE html>
-<link rel="shortcut icon" href="https://dinhertw.github.io/clockicon.ico"/>
-<title>testtimer - by Dinher</title>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <style>
+        /* 基本樣式 */
+        body {
+            font-family: sans-serif;
+            background-color: #000000;
+            color: #ffffff;
+            text-align: center;
+        }
+        /* 共通倒計時樣式 */
+        .countdown {
+            font-size: 50px;
+            margin-top: 15px;
+        }
+    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+    <!-- 第一個倒計時 -->
+    <div id="countdown1" class="countdown">資料同步中</div>
+    <!-- 第二個倒計時 -->
+    <div id="countdown2" class="countdown"></div>
 
+    <script>
+        // 設定倒計時
+        function setupCountdown(targetElementId, endDate, eventDescription) {
+            // 取得結束日期的時間戳
+            var countDownDate = new Date(endDate).getTime();
 
-<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><style>
-    body {
-      font-family: sans-serif;
-      background-color: #000000; 
-    }
+            // 啟動倒計時更新
+            var x = setInterval(function() {
+                // 取得當前時間
+                var now = new Date().getTime();
+                // 計算距離結束日期的時間差
+                var distance = countDownDate - now;
+                // 計算天數
+                var days = Math.floor(distance / (1000 * 60 * 60 * 24) + 1);
 
-    /* 背景 */
-    /* ... */
+                // 顯示剩餘天數和事件描述
+                document.getElementById(targetElementId).innerHTML = eventDescription + "還剩 " + days + " 天";
 
-    div {
-    text-align: center;
-    font-size: 50px;
-    margin-top: 15px;
-    color: #ffffff;
-  }
-  /* 倒計時格式 */
-  </style>
+                
+                {
+                }
+            }, 1000);
+        }
 
-
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <div id="1"><br></div>
-  <script>
-// 改日期
-var countDownDate1 = new Date("2024/1/18").getTime();
-
-// Update the count down every 1 second
-var y = setInterval(function() {
-
-    // Get today's date and time
-    var now = new Date().getTime();
-        
-    // Find the distance between now and the count down date
-    var distance1 = countDownDate1 - now;
-        
-    // Time calculations for days, hours, minutes and seconds
-    var days = Math.floor(distance1 / (1000 * 60 * 60 * 24)+1);
-    
-    // Output the result in an element with id="1"
-    document.getElementById("1").innerHTML = "第三次段考還剩 " + days + " 天" ;
-       
-}, 10);
-  </script>
-
-
-
-
-  
-  
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <div id="2"><br></div>
-  <script>
-  // 改日期
-  var countDownDate2 = new Date("2024/5/18").getTime();
-
-  // Update the count down every 1 second
-  var y = setInterval(function() {
-
-    // Get today's date and time
-    var now = new Date().getTime();
-      
-    // Find the distance between now and the count down date
-    var distance2 = countDownDate2 - now;
-      
-    // Time calculations for days, hours, minutes and seconds
-    var days = Math.floor(distance2 / (1000 * 60 * 60 * 24)+1);
-    
-    // Output the result in an element with id="demo"
-    document.getElementById("2").innerHTML = "會考還剩 " + days + " 天" ;
-	}, 10);
-      
-  </script>
-  
-
-
+        // 設定兩個不同的倒計時
+        setupCountdown("countdown1", "2024/1/18", "第三次段考");
+        setupCountdown("countdown2", "2024/5/18", "會考");
+    </script>
+</body>
+</html>
 
 
   <!---  // Time 天 時 分 秒
