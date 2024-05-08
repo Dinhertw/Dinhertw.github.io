@@ -19,10 +19,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
-    <!-- 第一個倒計時 -->
-    <div id="countdown1" class="countdown"></div>
-    <!-- 第二個倒計時 -->
-    <div id="countdown2" class="countdown"></div>
 
     <script>
         // 設定倒計時
@@ -48,10 +44,19 @@
             }, 5);
         }
 
+
+
+
+        
         // 設定兩個不同的倒計時
         setupCountdown("countdown1", "YYYY/MM/DD", "");
         setupCountdown("countdown2", "2024/5/18", "會考(5/18~5/19)");
     </script>
+    <!-- 第一個倒計時 -->
+    <!-- <div id="countdown1" class="countdown"></div> (暫時關閉) -->
+    <!-- 第二個倒計時 -->
+    <div id="countdown2" class="countdown"></div>
+
 </body>
 </html>
 <br>
