@@ -3,14 +3,14 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <style>
-        /* 基本樣式 */
+        /* 基本样式 */
         body {
             font-family: sans-serif;
             background-color: #000000;
             color: #ffffff;
             text-align: center;
         }
-        /* 共通倒計時樣式 */
+        /* 共通倒计时样式 */
         .countdown {
             font-size: 50px;
             margin-top: 15px;
@@ -21,54 +21,49 @@
 <body>
 
     <script>
-        // 設定倒計時
-        function setupCountdown(targetElementId, endDate, eventDescription) {
-            // 取得結束日期的時間戳
-            var countDownDate = new Date(endDate).getTime();
+        // 設定倒數計時
+        function setupCountdown(targetElementId, endDate, endTime, eventDescription) {
+            // 將結束日期和時間合併為一個字串，例如：YYYY/MM/DD HH:mm
+            var endDateWithTime = endDate + ' ' + endTime;
 
-            // 啟動倒計時更新
+            // 取得結束日期的時間戳
+            var countDownDate = new Date(endDateWithTime).getTime();
+
+            // 啟動倒數更新
             var x = setInterval(function() {
                 // 取得當前時間
                 var now = new Date().getTime();
                 // 計算距離結束日期的時間差
                 var distance = countDownDate - now;
-                // 計算天數
-                var days = Math.floor(distance / (1000 * 60 * 60 * 24) + 1);
+                // 計算天數、小時數、分鐘數、秒數
+                var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                var seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-                // 顯示剩餘天數和事件描述
-                document.getElementById(targetElementId).innerHTML = "距離&nbsp;" + eventDescription + "&nbsp;還剩&nbsp;" + days + "&nbsp;天";
+                // 顯示剩餘時間和事件描述
+                document.getElementById(targetElementId).innerHTML = "距離&nbsp;" + eventDescription + " 還剩 " + days + " 天 " + hours + " 小時 ";
 
-                
-                {
+{
+
                 }
-            }, 5);
+            }, 500); 
         }
 
-
-
-
-        
-        // 設定兩個不同的倒計時
-        setupCountdown("countdown1", "YYYY/MM/DD", "");
-        setupCountdown("countdown2", "2024/5/18", "會考(5/18~5/19)");
+        // 設定兩個不同的倒數計時
+        setupCountdown("countdown1", "2024/5/20", "08:00", "Event 1");
+        setupCountdown("countdown2", "2024/5/18", "08:00", "會考(5/18~5/19)");
     </script>
-    <!-- 第一個倒計時 -->
-    <!-- <div id="countdown1" class="countdown"></div> (暫時關閉) -->
-    <!-- 第二個倒計時 -->
+
+
+    
+    <!-- 第一個倒數計時 -->
+   <!--  <div id="countdown1" class="countdown"></div>  (暫時停用)-->
+    <!-- 第二個倒數計時 -->
     <div id="countdown2" class="countdown"></div>
+
+<br>
+<hr size="0.3px" align="center" width="75%"> <h1>會考加油!</h1>
+
 </body>
 </html>
-<br>
-<hr size="0.3px" align="center" width="75%">
-<h1>會考加油!</h1>    
-
-
-
-
-
-
-  <!---  // Time 天 時 分 秒
-    var days = Math.floor(distance / (1000 * 60 * 60 * 24));
-    var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-    var seconds = Math.floor((distance % (1000 * 60)) / 1000);-->
