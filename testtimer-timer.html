@@ -43,7 +43,12 @@
 
                 // 顯示剩餘時間和事件描述
                 document.getElementById(targetElementId).innerHTML = "距離&nbsp;" + eventDescription + " 還剩 " + days + " 天 " + hours + " 小時 ";
-
+                
+                // 如果倒數結束，清除定時器
+                if (distance < 0) {
+                    clearInterval(x);
+                    document.getElementById(targetElementId).innerHTML = "<br>";
+                }
 {
 
                 }
@@ -51,14 +56,14 @@
         }
 
         // 設定兩個不同的倒數計時
-        setupCountdown("countdown1", "2024/5/20", "08:00", "Event 1");
-        setupCountdown("countdown2", "2024/5/18", "08:00", "會考(5/18~5/19)");
+        setupCountdown("countdown1", "2024/4/1", "08:00", "Event 1");
+        setupCountdown("countdown2", "2024/5/18", "08:20", "會考(5/18~5/19)");
     </script>
 
 
     
     <!-- 第一個倒數計時 -->
-   <!--  <div id="countdown1" class="countdown"></div>  (暫時停用)-->
+   <div id="countdown1" class="countdown"></div>
     <!-- 第二個倒數計時 -->
     <div id="countdown2" class="countdown"></div>
 
