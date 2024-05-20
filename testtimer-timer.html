@@ -13,78 +13,71 @@
             font-size: 50px;
             margin: 20px;
         }
-      .footer-text {
-	   font-size: 10px;
-           position: fixed; /* 使元素固定定位 */
-           right: -3px; /* 距离右边10px */
-           bottom: -3px; /* 距离底部10px */
-           color: #fff; /* 文字颜色白色 */
-           padding: 10px; /* 内边距10px */
-           opacity: 0.1 ; /* 文字透明度，取值范围0-1 */
-  }
+        .footer-text {
+            font-size: 10px;
+            position: fixed; /* 使元素固定定位 */
+            right: -3px; /* 距離右邊10px */
+            bottom: -3px; /* 距離底部10px */
+            color: #fff; /* 文字顏色白色 */
+            padding: 10px; /* 內邊距10px */
+            opacity: 0.1; /* 文字透明度，取值範圍0-1 */
+        }
         h1 {
-	    font-family: sans-serif;
+            font-family: sans-serif;
             font-size: 40px;
-	    margin-top: 20px;
+            margin-top: 20px;
         }
     </style>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
 
-    <script>
-        // 設定倒數計時
-        function setupCountdown(targetElementId, endDate, endTime, eventDescription) {
-            // 將結束日期和時間合併為一個字串，例如：YYYY/MM/DD HH:mm
-            var endDateWithTime = endDate + ' ' + endTime;
+<script>
+    // 設定倒數計時
+    function setupCountdown(targetElementId, endDate, endTime, eventDescription) {
+        // 將結束日期和時間合併為一個字串，例如：YYYY/MM/DD HH:mm
+        var endDateWithTime = endDate + ' ' + endTime;
 
-            // 取得結束日期的時間戳
-            var countDownDate = new Date(endDateWithTime).getTime();
+        // 取得結束日期的時間戳
+        var countDownDate = new Date(endDateWithTime).getTime();
 
-            // 啟動倒數更新
-            var x = setInterval(function() {
-                // 取得當前時間
-                var now = new Date().getTime();
-                // 計算距離結束日期的時間差
-                var distance = countDownDate - now;
-                // 計算天數、小時數、分鐘數、秒數
-                var days = Math.floor(distance / (1000 * 60 * 60 * 24));
-                var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+        // 啟動倒數更新
+        var x = setInterval(function() {
+            // 取得當前時間
+            var now = new Date().getTime();
+            // 計算距離結束日期的時間差
+            var distance = countDownDate - now;
+            // 計算天數、小時數、分鐘數、秒數
+            var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            var seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-                // 顯示剩餘時間和事件描述
-                document.getElementById(targetElementId).innerHTML = "" + eventDescription + "" ;
-                
-                // 如果倒數結束，清除定時器
-                if (distance < 0) {
-                    clearInterval(x);
-                    document.getElementById(targetElementId).innerHTML = "";
-                }
-{
+            // 顯示剩餘時間和事件描述
+            document.getElementById(targetElementId).innerHTML = eventDescription + " " + days + "d " + hours + "h " + minutes + "m " + seconds + "s";
 
-                }
-            }, 10); 
-        }
+            // 如果倒數結束，清除定時器
+            if (distance < 0) {
+                clearInterval(x);
+                document.getElementById(targetElementId).innerHTML = "";
+            }
+        }, 1000); // 更新頻率改為每秒
+    }
 
-        // 設定兩個不同的倒數計時
-        setupCountdown("countdown1", "2024/5/20", "10:05", "(3)秀工建教合作班宣導：17 職探設計教室3樓");
-        setupCountdown("countdown2", "2024/5/20", "12:00", "(4)處理各科習作");
-        setupCountdown("countdown3", "2024/5/18", "14:10", "(5)法律宣導: 五樓集合場");
-        setupCountdown("countdown4", "2024/5/18", "15:05", "(6)畢旅行前說明會: 五樓集合場");
-    </script>
-    
-    <!-- 倒數計時 -->
-    <div id="countdown1" class="countdown"></div>
-    <div id="countdown2" class="countdown"></div>
-    <div id="countdown3" class="countdown"></div>    
-    <div id="countdown4" class="countdown"></div>
+    // 設定四個不同的倒數計時
+    setupCountdown("countdown1", "2024/5/20", "10:05", "(3) 秀工建教合作班宣導：17 職探設計教室3樓");
+    setupCountdown("countdown2", "2024/5/20", "12:00", "(4) 處理各科習作");
+    setupCountdown("countdown3", "2024/5/20", "14:10", "(5) 法律宣導: 五樓集合場");
+    setupCountdown("countdown4", "2024/5/20", "15:05", "(6) 畢旅行前說明會: 五樓集合場");
+</script>
 
+<!-- 倒數計時 -->
+<div id="countdown1" class="countdown"></div>
+<div id="countdown2" class="countdown"></div>
+<div id="countdown3" class="countdown"></div>
+<div id="countdown4" class="countdown"></div>
 
 <hr size="0.3px" align="center" width="75%"> <h1></h1>
-
-    
-  
 
 </body>
 </html>
