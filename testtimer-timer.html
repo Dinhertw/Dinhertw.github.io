@@ -54,7 +54,7 @@
                 var seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
                 // 顯示剩餘時間和事件描述
-                document.getElementById(targetElementId).innerHTML = "距離&nbsp;" + eventDescription + " 還剩 " + days + " 天 " + hours + " 小時 " + minutes + " 分 ";
+                document.getElementById(targetElementId).innerHTML = "" + eventDescription + "" ;
                 
                 // 如果倒數結束，清除定時器
                 if (distance < 0) {
@@ -68,16 +68,17 @@
         }
 
         // 設定兩個不同的倒數計時
-        setupCountdown("countdown1", "2024/4/1", "08:00", "Event 1");
-        setupCountdown("countdown2", "2024/5/18", "08:20", "會考(5/18~5/19)");
+        setupCountdown("countdown1", "2024/5/20", "10:05", "(3)秀工建教合作班宣導：17 職探設計教室3樓");
+        setupCountdown("countdown2", "2024/5/20", "12:00", "(4)處理各科習作");
+        setupCountdown("countdown3", "2024/5/18", "14:10", "(5)法律宣導: 五樓集合場");
+        setupCountdown("countdown4", "2024/5/18", "15:05", "(6)畢旅行前說明會: 五樓集合場");
     </script>
-
-<h1>(2)畢旅行前說明會: 五樓集合場<br>(3)秀工建教合作班宣導：17 職探設計教室3樓<br>(4)處理各科習作</h1>
     
-    <!-- 第一個倒數計時 -->
-   <div id="countdown1" class="countdown"></div>
-    <!-- 第二個倒數計時 -->
+    <!-- 倒數計時 -->
+    <div id="countdown1" class="countdown"></div>
     <div id="countdown2" class="countdown"></div>
+    <div id="countdown3" class="countdown"></div>    
+    <div id="countdown4" class="countdown"></div>
 
 
 <hr size="0.3px" align="center" width="75%"> <h1></h1>
