@@ -136,26 +136,6 @@
             display: none; /* 初始时隐藏 */
         }
 
-        .close-button {
-            position: fixed;
-            bottom: 20px;
-            right: 50%; /* 使按钮水平居中 */
-            transform: translateX(50%); /* 使按钮水平居中 */
-            padding: 8px 16px; /* 调整内边距 */
-            font-size: 14px; /* 调整字体大小 */
-            background-color: #007BFF;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            z-index: 9999;
-            width: 500px; /* 调整按钮宽度 */
-        }
-
-        .close-button:hover {
-            background-color: #0056b3;
-        }
-
 	.footer-text {
 	    font-size: 7px;
             position: fixed; /* 使元素固定定位 */
@@ -200,16 +180,6 @@
             <button onclick="clearHistory()">清除歷史記錄</button>
         </div>
     </div>
-    <button class="close-button" onclick="closeApp()">關閉</button>
-
-    <script>
-        // 新增关闭按钮功能
-        function closeApp() {
-            // 关闭窗口、跳转页面或执行其他关闭操作
-            // 这里简单示范关闭窗口
-            window.close();
-        }
-    </script>
 
 
     <script>
