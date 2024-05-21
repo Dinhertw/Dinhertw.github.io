@@ -156,6 +156,16 @@
             background-color: #0056b3;
         }
 
+	.footer-text {
+	    font-size: 7px;
+            position: fixed; /* 使元素固定定位 */
+            right: -1px; /* 距离右边10px */
+            bottom: -1px; /* 距离底部10px */
+            color: #fff; /* 文字颜色白色 */
+            padding: 10px; /* 内边距10px */
+	    opacity: 0.7 ; /* 文字透明度，取值范围0-1 */
+  }
+
         @keyframes numberChange {
             0% { opacity: 1; }
             100% { opacity: 0; }
@@ -389,4 +399,11 @@ function generateNumbers() {
 
     </script>
 </body>
+
+<body>
+  <div class="footer-text">選號器 2024.05 byDinher</div>
+</body>
+
+
 </html>
+
