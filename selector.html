@@ -136,6 +136,26 @@
             display: none; /* 初始时隐藏 */
         }
 
+        .close-button {
+            position: fixed;
+            bottom: 20px;
+            right: 50%; /* 使按钮水平居中 */
+            transform: translateX(50%); /* 使按钮水平居中 */
+            padding: 8px 16px; /* 调整内边距 */
+            font-size: 14px; /* 调整字体大小 */
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            z-index: 9999;
+            width: 500px; /* 调整按钮宽度 */
+        }
+
+        .close-button:hover {
+            background-color: #0056b3;
+        }
+
         @keyframes numberChange {
             0% { opacity: 1; }
             100% { opacity: 0; }
@@ -170,6 +190,17 @@
             <button onclick="clearHistory()">清除歷史記錄</button>
         </div>
     </div>
+    <button class="close-button" onclick="closeApp()">關閉</button>
+
+    <script>
+        // 新增关闭按钮功能
+        function closeApp() {
+            // 关闭窗口、跳转页面或执行其他关闭操作
+            // 这里简单示范关闭窗口
+            window.close();
+        }
+    </script>
+
 
     <script>
         let history = [];
@@ -227,98 +258,96 @@
             }
         }
 
-        function generateNumbers() {
-            const numPeople = parseInt(document.getElementById('numPeople').value);
-            const minRange = parseInt(document.getElementById('minRange').value);
-            const maxRange = parseInt(document.getElementById('maxRange').value);
-            const resultsList = document.getElementById('resultsList');
-            const historyList = document.getElementById('historyList');
-            const errorMessage = document.getElementById('errorMessage');
+function generateNumbers() {
+    const numPeople = parseInt(document.getElementById('numPeople').value);
+    const minRange = parseInt(document.getElementById('minRange').value);
+    const maxRange = parseInt(document.getElementById('maxRange').value);
+    const resultsList = document.getElementById('resultsList');
+    const historyList = document.getElementById('historyList');
+    const errorMessage = document.getElementById('errorMessage');
+    const generateButton = document.getElementById('generateButton');
 
-            // 清空之前的結果
-            resultsList.innerHTML = '';
+    // 清空之前的結果
+    resultsList.innerHTML = '';
 
-            if (isNaN(minRange) || isNaN(maxRange) || minRange >= maxRange) {
-                showError('請輸入有效的號碼範圍');
-                return;
+    if (isNaN(minRange) || isNaN(maxRange) || minRange >= maxRange) {
+        showError('請輸入有效的號碼範圍');
+        return;
+    }
+
+    if ((maxRange - minRange + 1) < numPeople) {
+        showError('號碼範圍不夠選擇人數');
+        return;
+    }
+
+    if (selectedNumbers.size === (maxRange - minRange + 1)) {
+        showError('所有號碼已選完');
+        return;
+    }
+
+    // 成功生成号码时隐藏错误消息
+    errorMessage.style.display = 'none';
+
+    // 生成隨機號碼的動畫效果
+    const selected = new Set();
+    const tempNumbers = [];
+    for (let i = 0; i < numPeople; i++) {
+        const li = document.createElement('li');
+        li.className = 'number-animation';
+        resultsList.appendChild(li);
+        tempNumbers.push(li);
+    }
+
+    let animationInterval = setInterval(() => {
+        tempNumbers.forEach(li => {
+            li.textContent = Math.floor(Math.random() * (maxRange - minRange + 1)) + minRange;
+        });
+    }, 100);
+
+    let timeout = setTimeout(() => {
+        clearInterval(animationInterval);
+        showError('在3秒內無法選出號碼，請重試');
+    }, 3000);
+
+    setTimeout(() => {
+        clearInterval(animationInterval);
+
+        // 隨機選擇號碼
+        while (selected.size < numPeople) {
+            const randomNumber = Math.floor(Math.random() * (maxRange - minRange + 1)) + minRange;
+            if (!selectedNumbers.has(randomNumber)) {
+                selected.add(randomNumber);
+                selectedNumbers.add(randomNumber);
             }
-
-            if ((maxRange - minRange + 1) < numPeople) {
-                showError('號碼範圍不夠選擇人數');
-                return;
-            }
-
-            if (selectedNumbers.size === (maxRange - minRange + 1)) {
-                showError('所有號碼已選完');
-                return;
-            }
-
-            // 成功生成号码时隐藏错误消息
-            errorMessage.style.display = 'none';
-
-            // 生成隨機號碼的動畫效果
-            const selected = new Set();
-            const tempNumbers = [];
-            for (let i = 0; i < numPeople; i++) {
-                const li = document.createElement('li');
-                li.className = 'number-animation';
-                resultsList.appendChild(li);
-                tempNumbers.push(li);
-            }
-
-            let animationInterval = setInterval(() => {
-                tempNumbers.forEach(li => {
-                    li.textContent = Math.floor(Math.random() * (maxRange - minRange + 1)) + minRange;
-                });
-            }, 100);
-
-            let timeout = setTimeout(() => {
-                clearInterval(animationInterval);
-                showError('在3秒內無法選出號碼，請重試');
-            }, 3000);
-
-            setTimeout(() => {
-                clearInterval(animationInterval);
-
-                // 隨機選擇號碼
-                while (selected.size < numPeople) {
-                    const randomNumber = Math.floor(Math.random() * (maxRange - minRange + 1)) + minRange;
-                    if (!selectedNumbers.has(randomNumber)) {
-                        selected.add(randomNumber);
-                        selectedNumbers.add(randomNumber);
-                    }
-                }
-
-                if (selected.size === numPeople) {
-                    clearTimeout(timeout); // 取消超时处理
-
-                    // 將選中的號碼添加到結果列表
-                    let index = 0;
-                    selected.forEach(num => {
-                        tempNumbers[index].textContent = num;
-                        tempNumbers[index].classList.remove('number-animation');
-                        index++;
-                    });
-
-                    // 更新歷史紀錄
-                    history.push(Array.from(selected));
-                    updateHistory(historyList);
-
-                    // 將選號結果和紀錄保存到 Cookie
-                    setCookie("history", JSON.stringify(history), 30);
-                    setCookie("selectedNumbers", JSON.stringify(Array.from(selectedNumbers)), 30);
-                    setCookie("minRange", minRange, 30); // 存储最小值
-                    setCookie("maxRange", maxRange, 30); // 存储最大值
-                    setCookie("numPeople", numPeople, 30); // 存储选人数
-
-                    // 若所有號碼都已被選完，禁用按鈕
-                    if (selectedNumbers.size === (maxRange - minRange + 1)) {
-                        document.getElementById('generateButton').disabled = true;
-                        showError('所有號碼已選完');
-                    }
-                }
-            }, 500); // 0.5秒後停止動畫並顯示最終結果
         }
+
+        if (selected.size === numPeople) {
+            clearTimeout(timeout); // 取消超时处理
+
+            // 將選中的號碼添加到結果列表
+            let index = 0;
+            selected.forEach(num => {
+                tempNumbers[index].textContent = num;
+                tempNumbers[index].classList.remove('number-animation');
+                index++;
+            });
+
+            // 更新歷史紀錄
+            history.push(Array.from(selected));
+            updateHistory(historyList);
+
+            // 將選號結果和紀錄保存到 Cookie
+            setCookie("history", JSON.stringify(history), 30);
+            setCookie("selectedNumbers", JSON.stringify(Array.from(selectedNumbers)), 30);
+
+            // 若所有號碼都已被選完，禁用按鈕
+            if (selectedNumbers.size === (maxRange - minRange + 1)) {
+                generateButton.disabled = true;
+                showError('所有號碼已選完');
+            }
+        }
+    }, 500); // 0.5秒後停止動畫並顯示最終結果
+}
 
         function showError(message) {
             const errorMessage = document.getElementById('errorMessage');
