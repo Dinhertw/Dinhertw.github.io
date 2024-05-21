@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>選號器</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            height: 100vh;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            display: flex;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .main-content, .history-content {
+            padding: 20px;
+        }
+
+        .main-content {
+            border-right: 1px solid #ddd;
+        }
+
+        .history-content {
+            max-width: 300px;
+            width: 100%;
+        }
+
+        h1, h2 {
+            text-align: center;
+        }
+
+        label {
+            display: block;
+            margin: 10px 0;
+        }
+
+        .input-container {
+            display: flex;
+            gap: 20px;
+            margin: 10px 0;
+        }
+
+        input[type="number"] {
+            flex: 1;
+            padding: 10px;
+            font-size: 16px;
+        }
+
+        button {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        #results {
+            margin-top: 20px;
+        }
+
+        #resultsList, #historyList {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .history-item {
+            margin-top: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+
+        /* 修改結果文字大小 */
+        #resultsList li {
+            font-size: 20px;
+        }
+
+        /* 設置歷史記錄區域的最大高度並添加滾動條 */
+        #historyList {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="main-content">
+            <h1>選號器</h1>
+            <label for="numPeople">選擇人數:</label>
+            <input type="number" id="numPeople" name="numPeople" min="1" value="1">
+
+            <label for="numRange">號碼範圍:</label>
+            <div class="input-container">
+                <input type="number" id="minRange" name="minRange" placeholder="最小值">
+                <input type="number" id="maxRange" name="maxRange" placeholder="最大值">
+            </div>
+
+            <button onclick="generateNumbers()">生成號碼</button>
+
+            <div id="results">
+                <h2>結果:</h2>
+                <ul id="resultsList"></ul>
+            </div>
+        </div>
+
+        <div class="history-content" id="history">
+            <h2>歷史記錄:</h2>
+            <ul id="historyList"></ul>
+            <button onclick="clearHistory()">清除歷史記錄</button>
+        </div>
+    </div>
+    <script>
+        let history = [];
+        let selectedNumbers = new Set();
+
+        function setCookie(name, value, days) {
+            const date = new Date();
+            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+            const expires = "expires=" + date.toUTCString();
+            document.cookie = name + "=" + value + ";" + expires + ";path=/";
+        }
+
+        function getCookie(name) {
+            const cname = name + "=";
+            const decodedCookie = decodeURIComponent(document.cookie);
+            const ca = decodedCookie.split(';');
+            for (let i = 0; i < ca.length; i++) {
+                let c = ca[i];
+                while (c.charAt(0) == ' ') {
+                    c = c.substring(1);
+                }
+                if (c.indexOf(cname) == 0) {
+                    return c.substring(cname.length, c.length);
+                }
+            }
+            return "";
+        }
+
+        function loadFromCookies() {
+            const savedHistory = getCookie("history");
+            const savedSelectedNumbers = getCookie("selectedNumbers");
+            const minRange = getCookie("minRange");
+            const maxRange = getCookie("maxRange");
+            const numPeople = getCookie("numPeople");
+
+            if (savedHistory) {
+                history = JSON.parse(savedHistory);
+                updateHistory(document.getElementById('historyList'));
+            }
+
+            if (savedSelectedNumbers) {
+                selectedNumbers = new Set(JSON.parse(savedSelectedNumbers));
+            }
+
+            if (minRange) {
+                document.getElementById('minRange').value = minRange;
+            }
+
+            if (maxRange) {
+                document.getElementById('maxRange').value = maxRange;
+            }
+
+            if (numPeople) {
+                document.getElementById('numPeople').value = numPeople;
+            }
+        }
+
+        function generateNumbers() {
+            const numPeople = parseInt(document.getElementById('numPeople').value);
+            const minRange = parseInt(document.getElementById('minRange').value);
+            const maxRange = parseInt(document.getElementById('maxRange').value);
+            const resultsList = document.getElementById('resultsList');
+            const historyList = document.getElementById('historyList');
+
+            // 清空之前的結果
+            resultsList.innerHTML = '';
+
+            if (isNaN(minRange) || isNaN(maxRange) || minRange >= maxRange) {
+                alert('請輸入有效的號碼範圍');
+                return;
+            }
+
+            if ((maxRange - minRange + 1) < numPeople) {
+                alert('號碼範圍不夠選擇人數');
+                return;
+            }
+
+            let currentSelection = [];
+            let availableNumbers = [];
+
+            for (let i = minRange; i <= maxRange; i++) {
+                if (!selectedNumbers.has(i)) {
+                    availableNumbers.push(i);
+                }
+            }
+
+            if (availableNumbers.length < numPeople) {
+                alert('可選號碼已經不足，將清除歷史記錄。');
+                clearHistory();
+                availableNumbers = [];
+                for (let i = minRange; i <= maxRange; i++) {
+                    availableNumbers.push(i);
+                }
+            }
+
+            for (let i = 0; i < numPeople; i++) {
+                const randomIndex = Math.floor(Math.random() * availableNumbers.length);
+                const randomNumber = availableNumbers[randomIndex];
+                availableNumbers.splice(randomIndex, 1);
+
+                const listItem = document.createElement('li');
+                listItem.textContent = `${randomNumber}`;
+                resultsList.appendChild(listItem);
+                currentSelection.push(randomNumber);
+                selectedNumbers.add(randomNumber);
+            }
+
+            history.push(currentSelection);
+            updateHistory(historyList);
+
+            setCookie("history", JSON.stringify(history), 7);
+            setCookie("selectedNumbers", JSON.stringify(Array.from(selectedNumbers)), 7);
+            setCookie("minRange", minRange, 7);
+            setCookie("maxRange", maxRange, 7);
+            setCookie("numPeople", numPeople, 7);
+        }
+
+        function updateHistory(historyList) {
+            historyList.innerHTML = '';
+
+            history.forEach((selection) => {
+                const historyItem = document.createElement('li');
+                historyItem.className = 'history-item';
+                historyItem.textContent = `${selection.join(', ')}`;
+                historyList.appendChild(historyItem);
+            });
+        }
+
+        function clearHistory() {
+            history = [];
+            selectedNumbers.clear();
+            document.getElementById('historyList').innerHTML = '';
+            setCookie("history", "", -1);
+            setCookie("selectedNumbers", "", -1);
+        }
+
+        window.onload = function() {
+            loadFromCookies();
+        }
+    </script>
+</body>
+</html>
