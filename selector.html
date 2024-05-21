@@ -9,11 +9,11 @@
             font-family: Arial, sans-serif;
             display: flex;
             justify-content: center;
-            align-items: center; /* 垂直居中 */
-            min-height: 100vh; /* 最小高度为视窗高度 */
+            align-items: center;
+            min-height: 100vh;
             background-color: #f0f0f0;
             margin: 0;
-            overflow: hidden; /* 隐藏滚动条 */
+            overflow: hidden;
         }
 
         .container {
@@ -21,10 +21,9 @@
             background-color: #fff;
             border-radius: 5px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            max-width: 100%; /* 确保容器宽度不会超出视窗 */
-            height: auto; /* 自动调整高度 */
-            padding: 20px; /* 确保内容有足够的内边距 */
-
+            max-width: 100%;
+            height: auto;
+            padding: 20px;
         }
 
         .main-content, .history-content {
@@ -96,7 +95,6 @@
             background-color: #f9f9f9;
         }
 
-        /* 修改結果文字大小 */
         #resultsList li {
             font-size: 150px;
             height: 125px;
@@ -106,17 +104,15 @@
             margin-top: 20px;
         }
 
-        /* 設置歷史記錄區域的最大高度並添加滾動條 */
         #historyList {
             max-height: 400px;
             overflow-y: auto;
-            border: 1px solid #ccc; /* 灰色边框 */
+            border: 1px solid #ccc;
             border-radius: 5px;
             padding: 10px;
-            background-color: #f2f2f2; /* 灰色背景 */
+            background-color: #f2f2f2;
         }
 
-        /* 數字快速切換動畫 */
         .number-animation {
             font-size: 20px;
             height: 40px;
@@ -133,18 +129,18 @@
             padding: 10px;
             margin-top: 10px;
             text-align: center;
-            display: none; /* 初始时隐藏 */
+            display: none;
         }
 
-	.footer-text {
-	    font-size: 7px;
-            position: fixed; /* 使元素固定定位 */
-            right: -1px; /* 距离右边10px */
-            bottom: -1px; /* 距离底部10px */
-            color: #fff; /* 文字颜色白色 */
-            padding: 10px; /* 内边距10px */
-	    opacity: 0.7 ; /* 文字透明度，取值范围0-1 */
-  }
+        .footer-text {
+            font-size: 7px;
+            position: fixed;
+            right: -1px;
+            bottom: -1px;
+            color: #fff;
+            padding: 10px;
+            opacity: 0.7;
+        }
 
         @keyframes numberChange {
             0% { opacity: 1; }
@@ -181,10 +177,12 @@
         </div>
     </div>
 
-
     <script>
         let history = [];
         let selectedNumbers = new Set();
+        let minRange = 0;
+        let maxRange = 0;
+        let numPeople = 0;
 
         function setCookie(name, value, days) {
             const date = new Date();
@@ -212,9 +210,9 @@
         function loadFromCookies() {
             const savedHistory = getCookie("history");
             const savedSelectedNumbers = getCookie("selectedNumbers");
-            const minRange = getCookie("minRange");
-            const maxRange = getCookie("maxRange");
-            const numPeople = getCookie("numPeople");
+            minRange = parseInt(getCookie("minRange"));
+            maxRange = parseInt(getCookie("maxRange"));
+            numPeople = parseInt(getCookie("numPeople"));
 
             if (savedHistory) {
                 history = JSON.parse(savedHistory);
@@ -225,109 +223,108 @@
                 selectedNumbers = new Set(JSON.parse(savedSelectedNumbers));
             }
 
-            if (minRange) {
+            if (!isNaN(minRange)) {
                 document.getElementById('minRange').value = minRange;
             }
 
-            if (maxRange) {
+            if (!isNaN(maxRange)) {
                 document.getElementById('maxRange').value = maxRange;
             }
 
-            if (numPeople) {
+            if (!isNaN(numPeople)) {
                 document.getElementById('numPeople').value = numPeople;
             }
         }
 
-function generateNumbers() {
-    const numPeople = parseInt(document.getElementById('numPeople').value);
-    const minRange = parseInt(document.getElementById('minRange').value);
-    const maxRange = parseInt(document.getElementById('maxRange').value);
-    const resultsList = document.getElementById('resultsList');
-    const historyList = document.getElementById('historyList');
-    const errorMessage = document.getElementById('errorMessage');
-    const generateButton = document.getElementById('generateButton');
-
-    // 清空之前的結果
-    resultsList.innerHTML = '';
-
-    if (isNaN(minRange) || isNaN(maxRange) || minRange >= maxRange) {
-        showError('請輸入有效的號碼範圍');
-        return;
-    }
-
-    if ((maxRange - minRange + 1) < numPeople) {
-        showError('號碼範圍不夠選擇人數');
-        return;
-    }
-
-    if (selectedNumbers.size === (maxRange - minRange + 1)) {
-        showError('所有號碼已選完');
-        return;
-    }
-
-    // 成功生成号码时隐藏错误消息
-    errorMessage.style.display = 'none';
-
-    // 生成隨機號碼的動畫效果
-    const selected = new Set();
-    const tempNumbers = [];
-    for (let i = 0; i < numPeople; i++) {
-        const li = document.createElement('li');
-        li.className = 'number-animation';
-        resultsList.appendChild(li);
-        tempNumbers.push(li);
-    }
-
-    let animationInterval = setInterval(() => {
-        tempNumbers.forEach(li => {
-            li.textContent = Math.floor(Math.random() * (maxRange - minRange + 1)) + minRange;
-        });
-    }, 100);
-
-    let timeout = setTimeout(() => {
-        clearInterval(animationInterval);
-        showError('在3秒內無法選出號碼，請重試');
-    }, 3000);
-
-    setTimeout(() => {
-        clearInterval(animationInterval);
-
-        // 隨機選擇號碼
-        while (selected.size < numPeople) {
-            const randomNumber = Math.floor(Math.random() * (maxRange - minRange + 1)) + minRange;
-            if (!selectedNumbers.has(randomNumber)) {
-                selected.add(randomNumber);
-                selectedNumbers.add(randomNumber);
-            }
-        }
-
-        if (selected.size === numPeople) {
-            clearTimeout(timeout); // 取消超时处理
-
-            // 將選中的號碼添加到結果列表
-            let index = 0;
-            selected.forEach(num => {
-                tempNumbers[index].textContent = num;
-                tempNumbers[index].classList.remove('number-animation');
-                index++;
-            });
-
-            // 更新歷史紀錄
-            history.push(Array.from(selected));
-            updateHistory(historyList);
-
-            // 將選號結果和紀錄保存到 Cookie
+        function saveToCookies() {
             setCookie("history", JSON.stringify(history), 30);
             setCookie("selectedNumbers", JSON.stringify(Array.from(selectedNumbers)), 30);
-
-            // 若所有號碼都已被選完，禁用按鈕
-            if (selectedNumbers.size === (maxRange - minRange + 1)) {
-                generateButton.disabled = true;
-                showError('所有號碼已選完');
-            }
+            setCookie("minRange", minRange, 30);
+            setCookie("maxRange", maxRange, 30);
+            setCookie("numPeople", numPeople, 30);
         }
-    }, 500); // 0.5秒後停止動畫並顯示最終結果
-}
+
+        function generateNumbers() {
+            numPeople = parseInt(document.getElementById('numPeople').value);
+            minRange = parseInt(document.getElementById('minRange').value);
+            maxRange = parseInt(document.getElementById('maxRange').value);
+            const resultsList = document.getElementById('resultsList');
+            const historyList = document.getElementById('historyList');
+            const errorMessage = document.getElementById('errorMessage');
+            const generateButton = document.getElementById('generateButton');
+
+            resultsList.innerHTML = '';
+
+            if (isNaN(minRange) || isNaN(maxRange) || minRange >= maxRange) {
+                showError('請輸入有效的號碼範圍');
+                return;
+            }
+
+            if ((maxRange - minRange + 1) < numPeople) {
+                showError('號碼範圍不夠選擇人數');
+                return;
+            }
+
+            if (selectedNumbers.size === (maxRange - minRange + 1)) {
+                showError('所有號碼已選完');
+                return;
+            }
+
+            errorMessage.style.display = 'none';
+
+            const selected = new Set();
+            const tempNumbers = [];
+            for (let i = 0; i < numPeople; i++) {
+                const li = document.createElement('li');
+                li.className = 'number-animation';
+                resultsList.appendChild(li);
+                tempNumbers.push(li);
+            }
+
+            let animationInterval = setInterval(() => {
+                tempNumbers.forEach(li => {
+                    li.textContent = Math.floor(Math.random() * (maxRange - minRange + 1)) + minRange;
+                });
+            }, 100);
+
+            let timeout = setTimeout(() => {
+                clearInterval(animationInterval);
+                showError('在3秒內無法選出號碼，請重試');
+            }, 3000);
+
+            setTimeout(() => {
+                clearInterval(animationInterval);
+
+                while (selected.size < numPeople) {
+                    const randomNumber = Math.floor(Math.random() * (maxRange - minRange + 1)) + minRange;
+                    if (!selectedNumbers.has(randomNumber)) {
+                        selected.add(randomNumber);
+                        selectedNumbers.add(randomNumber);
+                    }
+                }
+
+                if (selected.size === numPeople) {
+                    clearTimeout(timeout);
+
+                    let index = 0;
+                    selected.forEach(num => {
+                        tempNumbers[index].textContent = num;
+                        tempNumbers[index].classList.remove('number-animation');
+                        index++;
+                    });
+
+                    history.push(Array.from(selected));
+                    updateHistory(historyList);
+
+                    saveToCookies();
+
+                    if (selectedNumbers.size === (maxRange - minRange + 1)) {
+                        generateButton.disabled = true;
+                        showError('所有號碼已選完');
+                    }
+                }
+            }, 500);
+        }
 
         function showError(message) {
             const errorMessage = document.getElementById('errorMessage');
@@ -347,7 +344,6 @@ function generateNumbers() {
                 historyList.appendChild(li);
             });
 
-            // 自动滚动历史记录区域到底部
             historyList.scrollTop = historyList.scrollHeight;
         }
 
@@ -357,23 +353,19 @@ function generateNumbers() {
             document.getElementById('historyList').innerHTML = '';
             setCookie("history", "", -1);
             setCookie("selectedNumbers", "", -1);
-            setCookie("minRange", "", -1); // 清除最小值
-            setCookie("maxRange", "", -1); // 清除最大值
-            setCookie("numPeople", "", -1); // 清除选人数
+            setCookie("minRange", "", -1);
+            setCookie("maxRange", "", -1);
+            setCookie("numPeople", "", -1);
             document.getElementById('generateButton').disabled = false;
         }
 
         window.onload = () => {
             loadFromCookies();
         };
-
     </script>
 </body>
 
 <body>
-  <div class="footer-text">選號器 2024.05 byDinher</div>
+    <div class="footer-text">選號器 2024.05 byDinher</div>
 </body>
-
-
 </html>
-
