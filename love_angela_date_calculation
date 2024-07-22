@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>日期計算器</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f8ff;
+            text-align: center;
+        }
+        h1 {
+            color: #333;
+        }
+        #result {
+            font-size: 1.2em;
+            margin-top: 20px;
+            color: #555;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            margin-top: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+    <script>
+        function calculateDays() {
+            const startDate = new Date('2023-01-12');
+            const today = new Date();
+            const timeDifference = today - startDate;
+            const dayDifference = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+            document.getElementById('result').innerText = `從2023年1月12日到今天共有 ${dayDifference} 天。`;
+        }
+    </script>
+</head>
+<body onload="calculateDays()">
+    <h1>日期計算器</h1>
+    <p id="result"></p>
+    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTH3NhY9v-J_zip3jZ0hmwalN4aW72F0ZRPew&s" alt="示例圖片">
+</body>
+</html>
