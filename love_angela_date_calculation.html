@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
@@ -20,9 +21,14 @@
         h1 {
             color: #fff;
         }
-        #result {
+        h0 {
             font-size: 2.0em;
             margin-top: 20px;
+            color: #fff;
+        }
+        #result {
+            font-size: 2.0em;
+            margin-top: 3px;
             color: #fff;
         }
         img {
@@ -39,12 +45,13 @@
             const today = new Date();
             const timeDifference = today - startDate;
             const dayDifference = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
-            document.getElementById('result').innerText = `從2023年1月12日到今天共有 ${dayDifference} 天。`;
+            document.getElementById('result').innerText = `${dayDifference}天`;
         }
     </script>
 </head>
 <body onload="calculateDays()">
     <h1>❤️禾禾啦啦愛情計算器❤️</h1>
+    <h0>從2023/1/12到今天共有</h0>
     <p id="result"></p>
     <img src="https://i.pinimg.com/736x/14/cf/7e/14cf7e717662084ada9e168e21df853a.jpg">
 </body>
