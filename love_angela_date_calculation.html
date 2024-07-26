@@ -12,7 +12,7 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            height: 100%;
             margin: 0;
             background-color: #CECEFF;
             text-align: center;
@@ -41,6 +41,7 @@
             100% { transform: rotate(360deg); }
         }
         h1 {
+            margin-top: 100px;
             color: #fff;
         }
         h0 {
@@ -63,12 +64,12 @@
             animation: fade 1s;
         }
         img {
-            width: 100%;
+            display: block; /* 使圖片為塊級元素 */
+            max-width: 100%;
             height: auto;
-            max-height: 500px; /* 限制圖片最大高度 */
-            object-fit: contain; /* 保持圖片比例 */
+            margin: 20px auto; /* 上下距離20px，左右自動居中 */
             border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1)
             background: #00000025;
         }
         .prev, .next {
