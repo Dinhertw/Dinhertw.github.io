@@ -138,17 +138,15 @@
             setInterval(() => { plusSlides(1); }, 3000);
         }
 
-        document.addEventListener("DOMContentLoaded", function() {
+        window.addEventListener("load", function() {
             const loader = document.getElementById('loader');
             const content = document.getElementById('content');
             setTimeout(() => {
-                setTimeout(() => {
-                    loader.classList.add('hidden');
-                    content.classList.remove('hidden');
-                    calculateDays();
-                    initSlides();
-                }, 100); // 淡出動畫時間
-            }, 100); // 模擬載入時間
+                loader.classList.add('hidden');
+                content.classList.remove('hidden');
+                calculateDays();
+                initSlides();
+            }, 500);
         });
     </script>
 </head>
