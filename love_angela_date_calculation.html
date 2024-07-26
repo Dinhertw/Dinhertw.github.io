@@ -12,14 +12,36 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            height: 100%;
+            height: 100vh;
             margin: 0;
             background-color: #CECEFF;
             text-align: center;
         }
+        .loader {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-family: Arial, sans-serif;
+        }
+        .loader-text {
+            margin-top: 10px;
+            font-size: 18px;
+            color: #333;
+        }
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(0, 0, 0, 0.1);
+            border-top: 5px solid #333;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
         h1 {
             color: #fff;
-            margin-top: 100px;
         }
         h0 {
             font-size: 2.0em;
@@ -76,6 +98,16 @@
             from {opacity: .4} 
             to {opacity: 1}
         }
+        @keyframes fadeOut {
+            from {opacity: 1}
+            to {opacity: 0}
+        }
+        .hidden {
+            display: none;
+        }
+        .fade-out {
+            animation: fadeOut 2s forwards;
+        }
     </style>
     <script>
         function calculateDays() {
@@ -105,34 +137,45 @@
             showSlides(slideIndex = 1);
             setInterval(() => { plusSlides(1); }, 3000);
         }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            const loader = document.getElementById('loader');
+            const content = document.getElementById('content');
+            setTimeout(() => {
+                loader.classList.add('fade-out');
+                setTimeout(() => {
+                    loader.classList.add('hidden');
+                    content.classList.remove('hidden');
+                    calculateDays();
+                    initSlides();
+                }, 500); // 淡出動畫時間
+            }, 750); // 模擬載入時間
+        });
     </script>
 </head>
-<body onload="calculateDays(); initSlides();">
-    <h1>❤️禾禾啦啦愛情計算器❤️</h1>
-    <h0>從2023/1/12到今天共有</h0>
-    <p id="result"></p>
-    <div class="slideshow-container">
-        <div class="mySlides">
-            <img src="https://i.pinimg.com/736x/14/cf/7e/14cf7e717662084ada9e168e21df853a.jpg">
+<body>
+    <div id="loader" class="loader">
+        <div class="spinner"></div>
+        <div class="loader-text">連線中...</div>
+    </div>
+    <div id="content" class="hidden">
+        <h1>❤️禾禾啦啦愛情計算器❤️</h1>
+        <h0>從2023/1/12到今天共有</h0>
+        <p id="result"></p>
+        <div class="slideshow-container">
+            <div class="mySlides">
+                <img src="https://i.pinimg.com/736x/14/cf/7e/14cf7e717662084ada9e168e21df853a.jpg" alt="Image 1">
+            </div>
+            <div class="mySlides">
+                <img src="https://i.pinimg.com/736x/83/ff/24/83ff24e30dd86d51f02d30ad54b3e8aa.jpg" alt="Image 2">
+            </div>
+            <div class="mySlides">
+                <img src="https://i.pinimg.com/736x/36/f0/bb/36f0bb9189ea79c689bf8a57c4b20577.jpg" alt="Image 3">
+            </div>
+            <!-- Add more images as needed -->
+            <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
+            <a class="next" onclick="plusSlides(1)">&#10095;</a>
         </div>
-        <div class="mySlides">
-            <img src="https://cdn.hk01.com/di/media/images/dw/20200925/386214526091137024.jpeg/xLQidugUNhehDeBBPueLjp8qKSIwTK4qRRKOf0USjn8?v=w1920">
-        </div>
-        <div class="mySlides">
-            <img src="https://cdn2.ettoday.net/images/4390/4390092.jpg">
-        </div>
-        <div class="mySlides">
-            <img src="https://cdn2.ettoday.net/images/4390/4390094.jpg">
-        </div>
-        <div class="mySlides">
-            <img src="https://cdn2.ettoday.net/images/4390/4390095.jpg">
-        </div>
-        <div class="mySlides">
-            <img src="https://cdn2.ettoday.net/images/4390/4390096.jpg">
-        </div>
-        <!-- Add more images as needed -->
-        <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
-        <a class="next" onclick="plusSlides(1)">&#10095;</a>
     </div>
 </body>
 </html>
