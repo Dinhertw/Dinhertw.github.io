@@ -12,12 +12,13 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            height: 100%;
             margin: 0;
             background-color: #CECEFF;
             text-align: center;
         }
         .loader {
+            margin-top: 20%;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -41,6 +42,7 @@
             100% { transform: rotate(360deg); }
         }
         h1 {
+            margin-top: 30%;
             color: #fff;
         }
         h0 {
@@ -63,34 +65,26 @@
             animation: fade 1s;
         }
         img {
-            display: block; /* 使圖片為塊級元素 */
-            max-width: 100%;
-            height: auto;
+            max-width: 500px;
+            max-height: 500px;
             margin: 20px auto; /* 上下距離20px，左右自動居中 */
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1)
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             background: #00000025;
         }
         .prev, .next {
             cursor: pointer;
-            position: absolute;
+
             top: 50%;
             width: auto;
             margin-top: -22px;
-            padding: 16px;
+            padding: 15px;
             color: white;
             font-weight: bold;
             font-size: 18px;
-            transition: 0.6s ease;
+            transition: 0.5s ease;
             user-select: none;
-        }
-        .prev {
-            left: 0;
-            border-radius: 0 3px 3px 0;
-        }
-        .next {
-            right: 0;
-            border-radius: 3px 0 0 3px;
+            border-radius: 15px 15px 15px 15px;
         }
         .prev:hover, .next:hover {
             background-color: rgba(0, 0, 0, 0.8);
@@ -181,6 +175,12 @@
             <div class="mySlides">
                 <img src="https://dinhertw.github.io/photo/4.jpg" alt="Image">
             </div>
+
+
+            <div class="mySlides">
+                <img src="https://cdn2.ettoday.net/images/1688/d1688261.jpg" alt="Image">
+            </div>
+
 
 
 
