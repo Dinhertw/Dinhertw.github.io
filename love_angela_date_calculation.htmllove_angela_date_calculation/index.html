@@ -58,20 +58,15 @@
         .slideshow-container {
             max-width: 95%;
             position: relative;
-            margin: auto;
             margin-top: 20px;
         }
         .mySlides {
             display: none;
-            animation: slide 1s;
-        }
-        @keyframes slide {
-            from { transform: translateX(100%); }
-            to { transform: translateX(0); }
+            animation: fade 1s;
         }
         img {
-            width: 357px; /* 固定寬度 */
-            max-height: 70vh; /* 固定高度 */
+            width: 350px; /* 固定寬度 */
+            max-height: 60vh; /* 固定高度 */
             object-fit: cover; /* 保持比例，裁切超出部分 */
             display: block; /* 使圖片為塊級元素 */
             margin: 20px auto; /* 上下距離20px，左右自動居中 */
@@ -79,46 +74,33 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
         .prev, .next {
-            cursor: pointer;
-            position: absolute;
-            top: 50%;
-            width: auto;
-            padding: 15px;
-            color: white;
-            font-weight: bold;
-            font-size: 18px;
-            transition: 0.6s ease;
-            user-select: none;
-            margin: 10px;
-            transform: translateY(-50%);
+        cursor: pointer;
+        position: absolute;
+        top: 50%;
+        width: auto;
+        padding: 15px;
+        color: white;
+        font-weight: bold;
+        font-size: 18px;
+        transition: 0.75s ease;
+        user-select: none;
+        transform: translateY(-50%);
+        z-index: 5; /* 確保按鈕在圖片之上 */
         }
         .prev {
-            left: 0;
-            border-radius: 10px 0 0 10px;
+            left: -50px;
+            border-radius: 10px 10px 10px 10px;
         }
         .next {
-            right: 0;
-            border-radius: 0 10px 10px 0;
+            right: -50px;
+            border-radius: 10px 10px 10px 10px;
         }
         .prev:hover, .next:hover {
             background-color: rgba(0, 0, 0, 0.5);
         }
-        .dot-container {
-            text-align: center;
-            padding: 10px 0;
-        }
-        .dot {
-            cursor: pointer;
-            height: 15px;
-            width: 15px;
-            margin: 0 2px;
-            background-color: #bbb;
-            border-radius: 50%;
-            display: inline-block;
-            transition: background-color 0.6s ease;
-        }
-        .active, .dot:hover {
-            background-color: #717171;
+        @keyframes fade {
+            from {opacity: .4} 
+            to {opacity: 1}
         }
         @keyframes fadeOut {
             from {opacity: 1}
@@ -143,25 +125,16 @@
         let slideIndex = 0;
         function showSlides(n) {
             const slides = document.getElementsByClassName("mySlides");
-            const dots = document.getElementsByClassName("dot");
             if (n > slides.length) { slideIndex = 1 }
             if (n < 1) { slideIndex = slides.length }
             for (let i = 0; i < slides.length; i++) {
                 slides[i].style.display = "none";
             }
-            for (let i = 0; i < dots.length; i++) {
-                dots[i].className = dots[i].className.replace(" active", "");
-            }
             slides[slideIndex - 1].style.display = "block";
-            dots[slideIndex - 1].className += " active";
         }
 
         function plusSlides(n) {
             showSlides(slideIndex += n);
-        }
-
-        function currentSlide(n) {
-            showSlides(slideIndex = n);
         }
 
         function initSlides() {
@@ -192,42 +165,60 @@
         <p id="result"></p>
         <audio src="/love_angela_date_calculation.htmllove_angela_date_calculation/Naughty%20Boy,%20Sam%20Smith%20-%20La%20la%20la%20(Lyrics)_256k.mp3" loop controls></audio>
         <div class="slideshow-container">
+
+
+
+
+
             <div class="mySlides">
-                <img src="/love_angela_date_calculation.htmllove_angela_date_calculation/1.jpg" alt="Image 1">
+                <img src="/love_angela_date_calculation.htmllove_angela_date_calculation/1.jpg" alt="Image">
             </div>
+
             <div class="mySlides">
-                <img src="/love_angela_date_calculation.htmllove_angela_date_calculation/2.jpg" alt="Image 2">
+                <img src="/love_angela_date_calculation.htmllove_angela_date_calculation/2.jpg" alt="Image">
             </div>
+
+
             <div class="mySlides">
-                <img src="/love_angela_date_calculation.htmllove_angela_date_calculation/3.jpg" alt="Image 3">
+                <img src="/love_angela_date_calculation.htmllove_angela_date_calculation/3.jpg" alt="Image">
             </div>
+
+
             <div class="mySlides">
-                <img src="/love_angela_date_calculation.htmllove_angela_date_calculation/4.jpg" alt="Image 4">
+                <img src="/love_angela_date_calculation.htmllove_angela_date_calculation/4.jpg" alt="Image">
             </div>
+
+
+
             <div class="mySlides">
-                <img src="/love_angela_date_calculation.htmllove_angela_date_calculation/5.jpg" alt="Image 5">
+                <img src="/love_angela_date_calculation.htmllove_angela_date_calculation/5.jpg" alt="Image">
             </div>
+
+
             <div class="mySlides">
-                <img src="/love_angela_date_calculation.htmllove_angela_date_calculation/6.jpeg" alt="Image 6">
+                <img src="/love_angela_date_calculation.htmllove_angela_date_calculation/6.jpeg" alt="Image">
             </div>
+
+
             <div class="mySlides">
-                <img src="/love_angela_date_calculation.htmllove_angela_date_calculation/7.jpeg" alt="Image 7">
+                <img src="/love_angela_date_calculation.htmllove_angela_date_calculation/7.jpeg" alt="Image">
             </div>
+
             <div class="mySlides">
-                <img src="/love_angela_date_calculation.htmllove_angela_date_calculation/8.jpg" alt="Image 8">
+                <img src="/love_angela_date_calculation.htmllove_angela_date_calculation/8.jpg" alt="Image">
             </div>
+
+
+
+
+
+            <!-- Add more images as needed -->
+
+
+
+
             <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
             <a class="next" onclick="plusSlides(1)">&#10095;</a>
-        </div>
-        <div class="dot-container">
-            <span class="dot" onclick="currentSlide(1)"></span>
-            <span class="dot" onclick="currentSlide(2)"></span>
-            <span class="dot" onclick="currentSlide(3)"></span>
-            <span class="dot" onclick="currentSlide(4)"></span>
-            <span class="dot" onclick="currentSlide(5)"></span>
-            <span class="dot" onclick="currentSlide(6)"></span>
-            <span class="dot" onclick="currentSlide(7)"></span>
-            <span class="dot" onclick="currentSlide(8)"></span>
         </div>
     </div>
 </body>
