@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
@@ -64,7 +65,7 @@
             display: none;
             animation: fade 1s;
         }
-        img, iframe {
+        img {
             width: 75%; /* 固定寬度 */
             max-height: 50vh; /* 固定高度 */
             object-fit: cover; /* 保持比例，裁切超出部分 */
@@ -111,6 +112,14 @@
         }
         .fade-out {
             animation: fadeOut 2s forwards;
+        }
+        iframe {
+            max-width: 95%; /* 固定寬度 */
+            max-height: 40vh; /* 固定高度 */
+            display: block;/* 使圖片為塊級元素 */
+            margin: 20px auto; /* 上下距離20px，左右自動居中 */
+            border-radius: 10px;
+            box-shadow: 10px 20px 20px rgba(0, 0, 0, 0.15);
         }
     </style>
     <script>
@@ -244,7 +253,7 @@
         </div>
 
 
-<iframe width="100%" height="100%" src="https://www.youtube-nocookie.com/embed/videoseries?si=f4opapSu4h7Bt0qU&amp;controls=0&amp;list=PLjMik81zdJBhsr2XPvySFJzYdcSJXszBE" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<iframe src="https://www.youtube-nocookie.com/embed/videoseries?si=f4opapSu4h7Bt0qU&amp;controls=0&amp;list=PLjMik81zdJBhsr2XPvySFJzYdcSJXszBE" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 
 
