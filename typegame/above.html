@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>打字遊戲</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #000000;
+            color: #ffffff;
+        }
+        h0 {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        #game {
+            text-align: center;
+        }
+
+        #text {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        #input {
+            padding: 10px;
+            font-size: 18px;
+            width: 80%;
+            margin-bottom: 20px;
+            background-color: #000000;
+            color: #ffffff;
+            border: solid;
+            border-radius: 15px;
+        }
+
+        #result {
+            font-size: 20px;
+        }
+
+        .correct {
+            color: green;
+        }
+
+        .incorrect {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <div id="game">
+        <h0>above</h0><br>
+        <h0>形:上面的</h0><br>
+        <h0>副:在上面</h0><br>
+        <h0>介:在……上面</h0><br>
+        <h0>名:上面</h0><br>
+        <h0>動:</h0><br>
+        
+        <p id="text"></p>
+        <input type="text" id="input" placeholder="開始打字...">
+        <div id="result"></div>
+    </div>
+    <script>
+        const textElement = document.getElementById('text');
+        const inputElement = document.getElementById('input');
+        const resultElement = document.getElementById('result');
+
+        // 自訂的打字內容
+        const texts = [
+            'above',
+        ];
+
+        let currentIndex = 0;
+        let startTime;
+
+        function startGame() {
+            textElement.textContent = texts[currentIndex];
+            inputElement.value = '';
+            inputElement.focus();
+            startTime = new Date();
+        }
+
+        function endGame() {
+            const endTime = new Date();
+            const timeTaken = (endTime - startTime) / 1000; // 以秒計算
+            resultElement.textContent = ` 完成了！ 用時 ${timeTaken} 秒 ~ `;
+            currentIndex = (currentIndex + 1) % texts.length; // 下一段文本
+            setTimeout(startGame, 0); // 0秒後開始下一段
+        }
+
+        inputElement.addEventListener('input', () => {
+            const inputText = inputElement.value;
+            const correctText = texts[currentIndex];
+
+            if (inputText === correctText) {
+                endGame();
+            } else {
+                let isCorrect = true;
+                let outputHtml = '';
+                for (let i = 0; i < correctText.length; i++) {
+                    if (i < inputText.length) {
+                        if (inputText[i] === correctText[i]) {
+                            outputHtml += `<span class="correct">${correctText[i]}</span>`;
+                        } else {
+                            outputHtml += `<span class="incorrect">${correctText[i]}</span>`;
+                            isCorrect = false;
+                        }
+                    } else {
+                        outputHtml += `<span>${correctText[i]}</span>`;
+                    }
+                }
+                textElement.innerHTML = outputHtml;
+            }
+        });
+
+        startGame();
+    </script>
+</body>
+</html>
