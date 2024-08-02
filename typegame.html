@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="zh">
 <head>
@@ -138,7 +139,7 @@
             resultElement.textContent = `完成了！用時 ${timeTakenSeconds.toFixed(2)} 秒，速度 ${wpm.toFixed(2)} WPM～`;
             currentIndex = (currentIndex + 1) % texts.length; // 下一段文本
             textElement.innerHTML = texts[currentIndex].split('').map(char => `<span class="correct">${char}</span>`).join('');
-            setTimeout(startGame, 1000); // 1秒後開始下一段
+            setTimeout(startGame, 100); // 0.1秒後開始下一段
         }
 
         inputElement.addEventListener('input', () => {
