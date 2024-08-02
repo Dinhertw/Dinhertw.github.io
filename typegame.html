@@ -76,7 +76,7 @@
             const timeTaken = (endTime - startTime) / 1000; // 以秒計算
             resultElement.textContent = `完成了！用時 ${timeTaken} 秒。`;
             currentIndex = (currentIndex + 1) % texts.length; // 下一段文本
-            setTimeout(startGame, 2000); // 2秒後開始下一段
+            setTimeout(startGame, 1000); // 2秒後開始下一段
         }
 
         inputElement.addEventListener('input', () => {
