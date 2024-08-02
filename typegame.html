@@ -14,7 +14,7 @@
             height: 100%;
             margin: 0;
             background-color: #000000;
-            color: #ffffff
+            color: #ffffff;
         }
 
         #settings, #game {
@@ -26,7 +26,7 @@
             display: block;
         }
 
-        #inputText {
+        #inputText, #inputHint {
             font-family: Arial, sans-serif;
             padding: 10px;
             font-size: 18px;
@@ -35,7 +35,7 @@
             background-color: #000000;
             border-radius: 5px;
             color: #ffffff;
-            border: solid
+            border: solid 1px #ffffff;
         }
 
         #startButton {
@@ -45,10 +45,10 @@
             color: #ffffff;
             background-color: #000000;
             border-radius: 15px;
-            border: solid
+            border: solid 1px #ffffff;
         }
 
-        #text {
+        #text, #hintText {
             font-size: 25px;
             margin-bottom: 20px;
         }
@@ -62,7 +62,7 @@
             background-color: #000000;
             border-radius: 5px;
             color: #ffffff;
-            border: solid
+            border: solid 1px #ffffff;
         }
 
         #result {
@@ -81,11 +81,13 @@
 <body>
     <div id="settings">
         <h1>打字遊戲設置</h1>
-        <textarea id="inputText" rows="5" placeholder="輸入要打的文本..."></textarea><br>
+        <input type="text" id="inputHint" placeholder="輸入提示文字..."><br>
+         <input type="text" id="inputText" placeholder="輸入要打的文本..."><br>
         <button id="startButton">開始遊戲</button>
     </div>
     <div id="game">
         <h1>打字遊戲</h1>
+        <p id="hintText"></p>
         <p id="text"></p>
         <input type="text" id="input" placeholder="開始打字...">
         <div id="result"></div>
@@ -94,27 +96,32 @@
         const settingsDiv = document.getElementById('settings');
         const gameDiv = document.getElementById('game');
         const inputTextElement = document.getElementById('inputText');
+        const inputHintElement = document.getElementById('inputHint');
         const startButton = document.getElementById('startButton');
+        const hintTextElement = document.getElementById('hintText');
         const textElement = document.getElementById('text');
         const inputElement = document.getElementById('input');
         const resultElement = document.getElementById('result');
 
         let texts;
+        let hintText;
         let currentIndex = 0;
         let startTime;
 
         startButton.addEventListener('click', () => {
             texts = inputTextElement.value.split('\n').filter(line => line.trim() !== '');
-            if (texts.length > 0) {
+            hintText = inputHintElement.value.trim();
+            if (texts.length > 0 && hintText) {
                 settingsDiv.style.display = 'none';
                 gameDiv.style.display = 'block';
                 startGame();
             } else {
-                alert('請輸入有效的文本。');
+                alert('請輸入有效的文本和提示文字。');
             }
         });
 
         function startGame() {
+            hintTextElement.textContent = hintText;
             textElement.textContent = texts[currentIndex];
             inputElement.value = '';
             inputElement.focus();
@@ -124,10 +131,10 @@
         function endGame() {
             const endTime = new Date();
             const timeTaken = (endTime - startTime) / 1000; // 以秒計算
-            resultElement.textContent = ` 完成了！ 用時 ${timeTaken} 秒 ～ `;
+            resultElement.textContent = `完成了！用時 ${timeTaken} 秒。`;
             currentIndex = (currentIndex + 1) % texts.length; // 下一段文本
             textElement.innerHTML = texts[currentIndex].split('').map(char => `<span class="correct">${char}</span>`).join('');
-            setTimeout(startGame, 0); // 0秒後開始下一段
+            setTimeout(startGame, 000); // 1秒後開始下一段
         }
 
         inputElement.addEventListener('input', () => {
