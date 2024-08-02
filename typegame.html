@@ -56,8 +56,8 @@
 <body>
     <div id="game">
         <h0>形:<br></h0>
-        <h0>副:在國外、到國外<br></h0>
-        <h0>介:<br></h0>
+        <h0>副:橫過<br></h0>
+        <h0>介:橫過、穿越<br></h0>
         <h0>名:<br></h0>
         
         <p id="text"></p>
@@ -71,7 +71,7 @@
 
         // 自訂的打字內容
         const texts = [
-            'abroad',
+            'across',
         ];
 
         let currentIndex = 0;
@@ -87,7 +87,7 @@
         function endGame() {
             const endTime = new Date();
             const timeTaken = (endTime - startTime) / 1000; // 以秒計算
-            resultElement.textContent = `完成了！用時 ${timeTaken} 秒。`;
+            resultElement.textContent = ` 完成了！ 用時 ${timeTaken} 秒 ~ `;
             currentIndex = (currentIndex + 1) % texts.length; // 下一段文本
             setTimeout(startGame, 0); // 0秒後開始下一段
         }
