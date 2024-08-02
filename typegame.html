@@ -34,6 +34,10 @@
             font-size: 18px;
             width: 80%;
             margin-bottom: 20px;
+            background-color: #000000;
+            color: #ffffff;
+            border: solid;
+            border-radius: 15px;
         }
 
         #result {
@@ -51,10 +55,10 @@
 </head>
 <body>
     <div id="game">
-        <h0>形:上面的<br></h0>
-        <h0>副:在上面<br></h0>
-        <h0>介:在.......上面<br></h0>
-        <h0>名:上面<br></h0>
+        <h0>形:<br></h0>
+        <h0>副:在國外、到國外<br></h0>
+        <h0>介:<br></h0>
+        <h0>名:<br></h0>
         
         <p id="text"></p>
         <input type="text" id="input" placeholder="開始打字...">
@@ -67,7 +71,7 @@
 
         // 自訂的打字內容
         const texts = [
-            'above',
+            'abroad',
         ];
 
         let currentIndex = 0;
