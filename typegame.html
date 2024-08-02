@@ -82,7 +82,7 @@
     <div id="settings">
         <h1>打字遊戲設置</h1>
         <input type="text" id="inputHint" placeholder="輸入提示文字..."><br>
-         <input type="text" id="inputText" placeholder="輸入要打的文本..."><br>
+        <input type="text" id="inputText" placeholder="輸入要打的文本..."><br>
         <button id="startButton">開始遊戲</button>
     </div>
     <div id="game">
@@ -107,6 +107,7 @@
         let hintText;
         let currentIndex = 0;
         let startTime;
+        let hasStarted = false;
 
         startButton.addEventListener('click', () => {
             texts = inputTextElement.value.split('\n').filter(line => line.trim() !== '');
@@ -125,19 +126,27 @@
             textElement.textContent = texts[currentIndex];
             inputElement.value = '';
             inputElement.focus();
-            startTime = new Date();
+            hasStarted = false;
         }
 
         function endGame() {
             const endTime = new Date();
-            const timeTaken = (endTime - startTime) / 1000; // 以秒計算
-            resultElement.textContent = `完成了！用時 ${timeTaken} 秒～`;
+            const timeTakenSeconds = (endTime - startTime) / 1000; // 以秒計算
+            const timeTakenMinutes = timeTakenSeconds / 60; // 以分計算
+            const correctChars = texts[currentIndex].length; // 正確字符數
+            const wpm = (correctChars / 5) / timeTakenMinutes; // WPM計算
+            resultElement.textContent = `完成了！用時 ${timeTakenSeconds.toFixed(2)} 秒，速度 ${wpm.toFixed(2)} WPM～`;
             currentIndex = (currentIndex + 1) % texts.length; // 下一段文本
             textElement.innerHTML = texts[currentIndex].split('').map(char => `<span class="correct">${char}</span>`).join('');
-            setTimeout(startGame, 000); // 1秒後開始下一段
+            setTimeout(startGame, 1000); // 1秒後開始下一段
         }
 
         inputElement.addEventListener('input', () => {
+            if (!hasStarted && inputElement.value.length > 0) {
+                startTime = new Date();
+                hasStarted = true;
+            }
+
             const inputText = inputElement.value;
             const correctText = texts[currentIndex];
 
