@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="zh">
 <head>
@@ -9,35 +8,61 @@
         body {
             font-family: Arial, sans-serif;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             height: 100vh;
             margin: 0;
             background-color: #000000;
-            color: #ffffff;
+            color: #ffffff
         }
-        h0 {
-            font-size: 24px;
-            margin-bottom: 20px;
-        }
-        #game {
+
+        #settings, #game {
             text-align: center;
+            display: none;
         }
 
-        #text {
-            font-size: 24px;
-            margin-bottom: 20px;
+        #settings {
+            display: block;
         }
 
-        #input {
+        #inputText {
+            font-family: Arial, sans-serif;
             padding: 10px;
             font-size: 18px;
             width: 80%;
             margin-bottom: 20px;
             background-color: #000000;
+            border-radius: 5px;
             color: #ffffff;
-            border: solid;
+            border: solid
+        }
+
+        #startButton {
+            padding: 10px 20px;
+            font-size: 18px;
+            cursor: pointer;
+            color: #ffffff;
+            background-color: #000000;
             border-radius: 15px;
+            border: solid
+        }
+
+        #text {
+            font-size: 25px;
+            margin-bottom: 20px;
+        }
+
+        #input {
+            font-family: Arial, sans-serif;
+            padding: 10px;
+            font-size: 18px;
+            width: 80%;
+            margin-bottom: 20px;
+            background-color: #000000;
+            border-radius: 5px;
+            color: #ffffff;
+            border: solid
         }
 
         #result {
@@ -54,29 +79,40 @@
     </style>
 </head>
 <body>
+    <div id="settings">
+        <h1>打字遊戲設置</h1>
+        <textarea id="inputText" rows="5" placeholder="輸入要打的文本..."></textarea><br>
+        <button id="startButton">開始遊戲</button>
+    </div>
     <div id="game">
-        <h0>形:<br></h0>
-        <h0>副:<br></h0>
-        <h0>介:<br></h0>
-        <h0>名:行為、行動、法案<br></h0>
-        <h0>動:行動、扮演、下判決<br></h0>
-        
+        <h1>打字遊戲</h1>
         <p id="text"></p>
         <input type="text" id="input" placeholder="開始打字...">
         <div id="result"></div>
     </div>
     <script>
+        const settingsDiv = document.getElementById('settings');
+        const gameDiv = document.getElementById('game');
+        const inputTextElement = document.getElementById('inputText');
+        const startButton = document.getElementById('startButton');
         const textElement = document.getElementById('text');
         const inputElement = document.getElementById('input');
         const resultElement = document.getElementById('result');
 
-        // 自訂的打字內容
-        const texts = [
-            'act',
-        ];
-
+        let texts;
         let currentIndex = 0;
         let startTime;
+
+        startButton.addEventListener('click', () => {
+            texts = inputTextElement.value.split('\n').filter(line => line.trim() !== '');
+            if (texts.length > 0) {
+                settingsDiv.style.display = 'none';
+                gameDiv.style.display = 'block';
+                startGame();
+            } else {
+                alert('請輸入有效的文本。');
+            }
+        });
 
         function startGame() {
             textElement.textContent = texts[currentIndex];
@@ -88,8 +124,9 @@
         function endGame() {
             const endTime = new Date();
             const timeTaken = (endTime - startTime) / 1000; // 以秒計算
-            resultElement.textContent = ` 完成了！ 用時 ${timeTaken} 秒 ~ `;
+            resultElement.textContent = ` 完成了！ 用時 ${timeTaken} 秒 ～ `;
             currentIndex = (currentIndex + 1) % texts.length; // 下一段文本
+            textElement.innerHTML = texts[currentIndex].split('').map(char => `<span class="correct">${char}</span>`).join('');
             setTimeout(startGame, 0); // 0秒後開始下一段
         }
 
@@ -100,7 +137,6 @@
             if (inputText === correctText) {
                 endGame();
             } else {
-                let isCorrect = true;
                 let outputHtml = '';
                 for (let i = 0; i < correctText.length; i++) {
                     if (i < inputText.length) {
@@ -108,7 +144,6 @@
                             outputHtml += `<span class="correct">${correctText[i]}</span>`;
                         } else {
                             outputHtml += `<span class="incorrect">${correctText[i]}</span>`;
-                            isCorrect = false;
                         }
                     } else {
                         outputHtml += `<span>${correctText[i]}</span>`;
@@ -117,8 +152,6 @@
                 textElement.innerHTML = outputHtml;
             }
         });
-
-        startGame();
     </script>
 </body>
 </html>
