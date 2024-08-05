@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <html lang="zh">
 <head>
@@ -39,7 +40,7 @@
             border: solid 1px #ffffff;
         }
 
-        #startButton {
+        #startButton, .menu-button {
             padding: 10px 20px;
             font-size: 18px;
             cursor: pointer;
@@ -47,6 +48,7 @@
             background-color: #000000;
             border-radius: 7px;
             border: solid 1px #ffffff;
+            text-decoration: none;
         }
 
         #text, #hintText {
@@ -77,6 +79,7 @@
         .incorrect {
             color: red;
         }
+
     </style>
 </head>
 <body>
@@ -92,6 +95,7 @@
         <p id="text"></p>
         <input type="text" id="input" placeholder="開始打字...">
         <div id="result"></div>
+<a href="" class="menu-button">清除並重新開始</a>
     </div>
     <script>
         const settingsDiv = document.getElementById('settings');
