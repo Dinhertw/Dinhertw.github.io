@@ -29,7 +29,7 @@
         textarea {
             font-family: Arial, sans-serif;
             padding: 10px;
-            font-size: 18px;
+            font-size: 36px; /* 原来 18px 的字体大小放大一倍 */
             width: 80%;
             max-width: 100%;
             margin-bottom: 20px;
@@ -41,25 +41,25 @@
         }
 
         #startButton, #speakButton, #restartButton {
-            padding: 10px 20px;
-            font-size: 18px;
+            padding: 20px 40px; /* 增大按钮的内边距 */
+            font-size: 36px; /* 原来 18px 的字体大小放大一倍 */
             cursor: pointer;
             color: #ffffff;
             background-color: #000000;
             border-radius: 7px;
             border: solid 1px #ffffff;
-            margin: 5px; /* 增加按钮之间的间距 */
+            margin: 10px; /* 增加按钮之间的间距 */
         }
 
         #text, #hintText {
-            font-size: 25px;
+            font-size: 50px; /* 原来 25px 的字体大小放大一倍 */
             margin-bottom: 20px;
         }
 
         #input {
             font-family: Arial, sans-serif;
-            padding: 10px;
-            font-size: 18px;
+            padding: 20px; /* 增大输入框的内边距 */
+            font-size: 36px; /* 原来 18px 的字体大小放大一倍 */
             width: 80%;
             max-width: 100%;
             margin-bottom: 20px;
@@ -67,10 +67,11 @@
             border-radius: 7px;
             color: #ffffff;
             border: solid 1px #ffffff;
+            resize: both; /* 允许调整大小 */
         }
 
         #result {
-            font-size: 20px;
+            font-size: 40px; /* 原来 20px 的字体大小放大一倍 */
         }
 
         .correct {
@@ -81,7 +82,6 @@
             color: red;
         }
 
-        /* 用于对齐按钮的容器 */
         .button-container {
             display: flex;
             flex-direction: column;
@@ -100,7 +100,7 @@
         <h1>打字遊戲</h1>
         <p id="hintText"></p>
         <p id="text"></p>
-        <input type="text" id="input" placeholder="開始打字...">
+        <textarea id="input" rows="3" placeholder="開始打字..."></textarea>
         <div id="result"></div>
         <div class="button-container">
             <button id="speakButton">朗讀文本</button>
@@ -160,7 +160,7 @@
             textElement.innerHTML = texts[currentIndex].split('').map(char => `<span class="correct">${char}</span>`).join('');
             setTimeout(() => {
                 startGame();
-            }, 1000); // 1秒後開始下一段
+            }, 100); // 1秒後開始下一段
         }
 
         inputElement.addEventListener('input', () => {
@@ -193,7 +193,7 @@
 
         function autoSpeak(text) {
             const utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = 'cn'; // 设定语言
+            utterance.lang = 'en'; // 设定语言
             speechSynthesis.speak(utterance);
         }
 
