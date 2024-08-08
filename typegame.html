@@ -97,11 +97,6 @@
         <h1>打字遊戲設置</h1>
                 <textarea id="inputHint" rows="3" placeholder="輸入提示文字..."></textarea><br>
         <textarea id="inputText" rows="5" placeholder="輸入要打的文本..."></textarea><br>
-
-        <label>
-            <input type="checkbox" id="showHint" checked>
-            顯示提示文字
-        </label><br>
         <button id="startButton">開始遊戲</button>
     </div>
     <div id="game">
@@ -175,11 +170,7 @@
         });
 
         function startGame() {
-            if (showHintCheckbox.checked && hintText) {
-                hintTextElement.textContent = hintText;
-            } else {
-                hintTextElement.textContent = ''; // 隐藏提示文字
-            }
+            hintTextElement.textContent = hintText;
             textElement.textContent = texts[currentIndex];
             inputElement.value = '';
             inputElement.focus();
