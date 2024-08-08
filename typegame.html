@@ -146,7 +146,7 @@
 
         function displayBestRecord() {
             if (bestRecord) {
-                bestRecordElement.textContent = `最佳記錄：用時 ${bestRecord.time.toFixed(2)} 秒，速度 ${bestRecord.wpm.toFixed(2)} WPM`;
+                bestRecordElement.textContent = `最佳記錄：用時 ${bestRecord.time.toFixed(2)} 秒，速度 ${bestRecord.wpm.toFixed(2)} WPM！`;
             } else {
                 bestRecordElement.textContent = '';
             }
@@ -223,7 +223,7 @@
 
         function autoSpeak(text) {
             const utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = 'en'; // 設定語言為繁體中文
+            utterance.lang = 'en'; // 設定語言
             speechSynthesis.speak(utterance);
         }
 
