@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -29,7 +29,7 @@
         textarea {
             font-family: Arial, sans-serif;
             padding: 10px;
-            font-size: 36px; /* 原来 18px 的字体大小放大一倍 */
+            font-size: 36px; /* 字體放大一倍 */
             width: 80%;
             max-width: 100%;
             margin-bottom: 20px;
@@ -41,25 +41,25 @@
         }
 
         #startButton, #speakButton, #restartButton {
-            padding: 20px 40px; /* 增大按钮的内边距 */
-            font-size: 36px; /* 原来 18px 的字体大小放大一倍 */
+            padding: 20px 40px; /* 增大按鈕的內邊距 */
+            font-size: 36px; /* 字體放大一倍 */
             cursor: pointer;
             color: #ffffff;
             background-color: #000000;
             border-radius: 7px;
             border: solid 1px #ffffff;
-            margin: 10px; /* 增加按钮之间的间距 */
+            margin: 10px; /* 增加按鈕之間的間距 */
         }
 
-        #text, #hintText {
-            font-size: 50px; /* 原来 25px 的字体大小放大一倍 */
+        #text {
+            font-size: 50px; /* 字體放大一倍 */
             margin-bottom: 20px;
         }
 
         #input {
             font-family: Arial, sans-serif;
-            padding: 20px; /* 增大输入框的内边距 */
-            font-size: 36px; /* 原来 18px 的字体大小放大一倍 */
+            padding: 20px; /* 增大輸入框的內邊距 */
+            font-size: 36px; /* 字體放大一倍 */
             width: 80%;
             max-width: 100%;
             margin-bottom: 20px;
@@ -67,11 +67,11 @@
             border-radius: 7px;
             color: #ffffff;
             border: solid 1px #ffffff;
-            resize: both; /* 允许调整大小 */
+            resize: both; /* 允許調整大小 */
         }
 
         #result {
-            font-size: 40px; /* 原来 20px 的字体大小放大一倍 */
+            font-size: 40px; /* 字體放大一倍 */
         }
 
         .correct {
@@ -92,20 +92,27 @@
 <body>
     <div id="settings">
         <h1>打字遊戲設置</h1>
-        <textarea id="inputHint" rows="3" placeholder="輸入提示文字..."></textarea><br>
+                <textarea id="inputHint" rows="3" placeholder="輸入提示文字..."></textarea><br>
         <textarea id="inputText" rows="5" placeholder="輸入要打的文本..."></textarea><br>
+
+        <label>
+            <input type="checkbox" id="showHint" checked>
+            顯示提示文字
+        </label><br>
         <button id="startButton">開始遊戲</button>
     </div>
     <div id="game">
         <h1>打字遊戲</h1>
-        <p id="hintText"></p>
+        <p id="hintText"></p> <!-- 提示文字框架 -->
         <p id="text"></p>
         <textarea id="input" rows="3" placeholder="開始打字..."></textarea>
         <div id="result"></div>
+        <p id="bestRecord"></p> <!-- 顯示最佳記錄 -->
         <div class="button-container">
             <button id="speakButton">朗讀文本</button>
             <button id="restartButton">清除並重新開始</button>
         </div>
+
     </div>
     <script>
         const settingsDiv = document.getElementById('settings');
@@ -113,40 +120,68 @@
         const inputTextElement = document.getElementById('inputText');
         const inputHintElement = document.getElementById('inputHint');
         const startButton = document.getElementById('startButton');
+        const showHintCheckbox = document.getElementById('showHint');
         const speakButton = document.getElementById('speakButton');
         const restartButton = document.getElementById('restartButton');
         const hintTextElement = document.getElementById('hintText');
         const textElement = document.getElementById('text');
         const inputElement = document.getElementById('input');
         const resultElement = document.getElementById('result');
+        const bestRecordElement = document.getElementById('bestRecord');
 
         let texts;
         let hintText;
         let currentIndex = 0;
         let startTime;
+        let bestRecord = null; // 初始化最佳记录为空
         let hasStarted = false;
+
+        function updateBestRecord(timeTakenSeconds, wpm) {
+            if (!bestRecord || timeTakenSeconds < bestRecord.time) {
+                bestRecord = {
+                    time: timeTakenSeconds,
+                    wpm: wpm
+                };
+                displayBestRecord();
+            }
+        }
+
+        function displayBestRecord() {
+            if (bestRecord) {
+                bestRecordElement.textContent = `最佳記錄：用時 ${bestRecord.time.toFixed(2)} 秒，速度 ${bestRecord.wpm.toFixed(2)} WPM`;
+            } else {
+                bestRecordElement.textContent = '';
+            }
+        }
 
         startButton.addEventListener('click', () => {
             texts = inputTextElement.value.split('\n').filter(line => line.trim() !== '');
             hintText = inputHintElement.value.trim();
-            if (texts.length > 0 && hintText) {
+            if (texts.length > 0) {
                 settingsDiv.style.display = 'none';
                 gameDiv.style.display = 'block';
                 startGame();
-                speakButton.style.display = 'block'; // 游戏开始后显示朗读按钮
-                restartButton.style.display = 'block'; // 游戏开始后显示重置按钮
+                speakButton.style.display = 'block'; // 遊戲開始後顯示朗讀按鈕
+                restartButton.style.display = 'block'; // 遊戲開始後顯示重置按鈕
+                localStorage.removeItem('bestRecord'); // 清除最佳记录
+                bestRecord = null; // 重置最佳记录
+                displayBestRecord(); // 更新显示最佳记录
             } else {
-                alert('請輸入有效的文本和提示文字。');
+                alert('請輸入有效的文本。');
             }
         });
 
         function startGame() {
-            hintTextElement.textContent = hintText;
+            if (showHintCheckbox.checked && hintText) {
+                hintTextElement.textContent = hintText;
+            } else {
+                hintTextElement.textContent = ''; // 隐藏提示文字
+            }
             textElement.textContent = texts[currentIndex];
             inputElement.value = '';
             inputElement.focus();
-            hasStarted = false;
-            autoSpeak(texts[currentIndex]); // 自动朗读当前文本
+            startTime = new Date(); // 直接開始計時
+            autoSpeak(texts[currentIndex]); // 自動朗讀當前文本
         }
 
         function endGame() {
@@ -156,6 +191,7 @@
             const correctChars = texts[currentIndex].length; // 正確字符數
             const wpm = (correctChars / 5) / timeTakenMinutes; // WPM計算
             resultElement.textContent = `完成了！用時 ${timeTakenSeconds.toFixed(2)} 秒，速度 ${wpm.toFixed(2)} WPM～`;
+            updateBestRecord(timeTakenSeconds, wpm); // 更新最佳記錄
             currentIndex = (currentIndex + 1) % texts.length; // 下一段文本
             textElement.innerHTML = texts[currentIndex].split('').map(char => `<span class="correct">${char}</span>`).join('');
             setTimeout(() => {
@@ -193,7 +229,7 @@
 
         function autoSpeak(text) {
             const utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = 'en'; // 设定语言
+            utterance.lang = 'en'; // 設定語言為繁體中文
             speechSynthesis.speak(utterance);
         }
 
@@ -204,7 +240,19 @@
         restartButton.addEventListener('click', () => {
             settingsDiv.style.display = 'block';
             gameDiv.style.display = 'none';
+            // 清除文本框的內容
+            inputTextElement.value = '';
+            inputHintElement.value = '';
+            textElement.textContent = '';
+            hintTextElement.textContent = '';
+            inputElement.value = '';
+            resultElement.textContent = '';
+            speakButton.style.display = 'none';
+            restartButton.style.display = 'none';
+            bestRecordElement.textContent = '';
         });
+
+        displayBestRecord(); // 顯示最佳記錄
     </script>
 </body>
 </html>
