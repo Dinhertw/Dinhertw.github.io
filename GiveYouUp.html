@@ -1,7 +1,41 @@
-<!DOCTYPE html> 
-<video width="100vw" autoplay loop	>
-  <source src="GiveYouUp.mp4" type="video/mp4">
-  Your browser does not support HTML video.
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        /* 設定影片的寬度為 100% */
+        video {
+            width: 100%;
+            height: auto;
+        }
+    </style>
+    <script>
+        function adjustVideoSize() {
+            var video = document.getElementById("myVideo");
+            var screenWidth = window.innerWidth;
+            video.style.width = screenWidth + "px";
+        }
+
+        // 在頁面載入時自動調整影片大小
+        window.onload = function () {
+            adjustVideoSize();
+            var video = document.getElementById("myVideo");
+            // 自動播放影片
+            video.play();
+        };
+
+        // 當視窗大小改變時重新調整影片大小
+        window.onresize = adjustVideoSize;
+    </script>
+</head>
+<body>
+
+<video id="myVideo" controls autoplay>
+    <source src="https://dinhertw.github.io/GiveYouUp.mp4" type="video/mp4">
+    您的瀏覽器不支援 HTML5 影片標籤。
 </video>
 
-
+</body>
+</html>
