@@ -304,9 +304,9 @@
     //new year !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
       Swal.fire({
-        title: '<span style="color: white; text-shadow: 0 0 10px #ffd700, 0 0 20px #ff6347;">新年快樂！🎉</span>',
+        title: '<span style="color: white; text-shadow: 0 0 10px #ffd700, 0 0 20px #ff6347;">啦啦新年快樂！🎉</span>',
         html: `
-          <div style="position: relative; width: 100%; height: 300px; background: transparent;">
+          <div style="position: relative; width: 100%; height: 100vh; background: transparent;">
             <canvas id="fireworks" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></canvas>
           </div>
         `,
@@ -316,6 +316,14 @@
           const canvas = document.getElementById('fireworks');
           const ctx = canvas.getContext('2d');
 
+          // 調整畫布大小
+          function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+          }
+          resizeCanvas();
+          window.addEventListener('resize', resizeCanvas);
+
           let fireworks = [];
 
           class Firework {
@@ -323,7 +331,7 @@
               this.x = x;
               this.y = y;
               this.particles = [];
-              for (let i = 0; i < 80; i++) { // 增加煙火粒子數量
+              for (let i = 0; i < 80; i++) {
                 this.particles.push(new Particle(this.x, this.y));
               }
             }
@@ -379,7 +387,7 @@
             });
 
             // 隨機添加新的煙火
-            if (Math.random() < 0.05) { // 控制隨機生成煙火的頻率
+            if (Math.random() < 0.1) {
               addFirework(Math.random() * canvas.width, Math.random() * canvas.height);
             }
 
@@ -396,7 +404,7 @@
           animate();
 
           // 預設大量煙火
-          for (let i = 0; i < 10; i++) { // 初始煙火數量增加
+          for (let i = 0; i < 100; i++) {
             addFirework(Math.random() * canvas.width, Math.random() * canvas.height);
           }
         }
