@@ -306,34 +306,15 @@
       Swal.fire({
         title: '<span style="color: white; text-shadow: 0 0 10px #ffd700, 0 0 20px #ff6347;">新年快樂！🎉</span>',
         html: `
-          <style>
-            #fireworks-container {
-              position: relative;
-              width: 100%;
-              height: 300px;
-              background: transparent;
-              overflow: hidden;
-            }
-            canvas {
-              display: block;
-              position: absolute;
-              top: 0;
-              left: 0;
-              width: 100%;
-              height: 100%;
-              pointer-events: none;
-            }
-          </style>
-          <div id="fireworks-container">
-            <canvas id="fireworks"></canvas>
+          <div style="position: relative; width: 100%; height: 300px; background: transparent;">
+            <canvas id="fireworks" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></canvas>
           </div>
         `,
-        showConfirmButton: false,
+        background: 'transparent',
+	confirmButtonText: '關閉',
         willOpen: () => {
           const canvas = document.getElementById('fireworks');
           const ctx = canvas.getContext('2d');
-          canvas.width = canvas.offsetWidth;
-          canvas.height = canvas.offsetHeight;
 
           let fireworks = [];
 
@@ -342,7 +323,7 @@
               this.x = x;
               this.y = y;
               this.particles = [];
-              for (let i = 0; i < 50; i++) {
+              for (let i = 0; i < 80; i++) { // 增加煙火粒子數量
                 this.particles.push(new Particle(this.x, this.y));
               }
             }
@@ -396,27 +377,30 @@
               firework.update();
               firework.draw();
             });
+
+            // 隨機添加新的煙火
+            if (Math.random() < 0.05) { // 控制隨機生成煙火的頻率
+              addFirework(Math.random() * canvas.width, Math.random() * canvas.height);
+            }
+
             requestAnimationFrame(animate);
           }
 
+          // 點擊觸發煙火
           canvas.addEventListener('click', e => {
             const rect = canvas.getBoundingClientRect();
             addFirework(e.clientX - rect.left, e.clientY - rect.top);
           });
 
+          // 初始動畫
           animate();
 
-          // Add initial fireworks
-          for (let i = 0; i < 5; i++) {
+          // 預設大量煙火
+          for (let i = 0; i < 10; i++) { // 初始煙火數量增加
             addFirework(Math.random() * canvas.width, Math.random() * canvas.height);
           }
-        },
-        timer: 8000, // 彈窗持續時間，可自行調整
-        didClose: () => {
-          cancelAnimationFrame();
         }
       });
-    
 
 </script>
 
