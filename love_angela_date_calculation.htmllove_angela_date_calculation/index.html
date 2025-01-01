@@ -303,10 +303,95 @@
 
     //new year !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-        Swal.fire({
-            title: '啦啦新年快樂🎆',
-            confirmButtonText: '忍痛關掉禾禾的祝福'
-        });
+      Swal.fire({
+        title: '新年快樂！🎉',
+        html: '<canvas id="fireworks"></canvas>',
+        showConfirmButton: false,
+        timer: 5000,
+        willOpen: () => {
+          const canvas = document.getElementById('fireworks');
+          const ctx = canvas.getContext('2d');
+          canvas.width = canvas.offsetWidth;
+          canvas.height = canvas.offsetHeight;
+
+          let fireworks = [];
+
+          class Firework {
+            constructor(x, y) {
+              this.x = x;
+              this.y = y;
+              this.particles = [];
+              for (let i = 0; i < 50; i++) {
+                this.particles.push(new Particle(this.x, this.y));
+              }
+            }
+            update() {
+              this.particles = this.particles.filter(particle => !particle.done);
+              this.particles.forEach(particle => particle.update());
+            }
+            draw() {
+              this.particles.forEach(particle => particle.draw());
+            }
+          }
+
+          class Particle {
+            constructor(x, y) {
+              this.x = x;
+              this.y = y;
+              this.radius = Math.random() * 2 + 1;
+              this.color = `hsl(${Math.random() * 360}, 100%, 50%)`;
+              this.speedX = Math.random() * 6 - 3;
+              this.speedY = Math.random() * 6 - 3;
+              this.alpha = 1;
+              this.decay = Math.random() * 0.02 + 0.01;
+              this.done = false;
+            }
+            update() {
+              this.x += this.speedX;
+              this.y += this.speedY;
+              this.alpha -= this.decay;
+              if (this.alpha <= 0) {
+                this.done = true;
+              }
+            }
+            draw() {
+              ctx.globalAlpha = this.alpha;
+              ctx.beginPath();
+              ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+              ctx.fillStyle = this.color;
+              ctx.fill();
+              ctx.globalAlpha = 1;
+            }
+          }
+
+          function addFirework(x, y) {
+            fireworks.push(new Firework(x, y));
+          }
+
+          function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            fireworks = fireworks.filter(firework => firework.particles.length > 0);
+            fireworks.forEach(firework => {
+              firework.update();
+              firework.draw();
+            });
+            requestAnimationFrame(animate);
+          }
+
+          canvas.addEventListener('click', e => {
+            const rect = canvas.getBoundingClientRect();
+            addFirework(e.clientX - rect.left, e.clientY - rect.top);
+          });
+
+          animate();
+
+          // Add initial fireworks
+          for (let i = 0; i < 5; i++) {
+            addFirework(Math.random() * canvas.width, Math.random() * canvas.height);
+          }
+        }
+      });
+    
 
 </script>
 
