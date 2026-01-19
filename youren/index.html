@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>影片彈窗播放器</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> <!-- SweetAlert2最新CDN [web:7]-->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        button {
+            margin: 10px;
+            padding: 15px 30px;
+            font-size: 18px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            background: #ff6b6b;
+            color: white;
+            transition: transform 0.2s;
+        }
+        button:hover {
+            transform: scale(1.05);
+        }
+        /* 響應式影片容器 [web:9] */
+        .video-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            height: 0;
+            padding-bottom: 56.25%; /* 16:9比例 */
+            margin: 20px auto;
+        }
+        .video-container video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+    </style>
+</head>
+<body>
+    <h1>點擊按鈕開啟影片彈窗</h1>
+    <button onclick="playVideo('video1.mp4', '第一個影片')">播放影片1</button>
+    <button onclick="playVideo('video2.mp4', '第二個影片')">播放影片2</button>
+    <button onclick="playVideo('video3.mp4', '第三個影片')">播放影片3</button>
+
+    <script>
+        function playVideo(src, title) {
+            Swal.fire({
+                title: title,
+                width: '90%',
+                html: `
+                    <div class="video-container">
+                        <video autoplay muted playsinline controls loop>
+                            <source src="${src}" type="video/mp4">
+                            您的瀏覽器不支援影片播放。
+                        </video>
+                    </div>
+                `,
+                showCloseButton: true,
+                showConfirmButton: false,
+                allowOutsideClick: true,
+                customClass: {
+                    popup: 'swal-wide'
+                }
+            });
+        }
+    </script>
+</body>
+</html>
