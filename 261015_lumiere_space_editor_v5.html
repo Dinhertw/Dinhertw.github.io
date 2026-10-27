@@ -1,0 +1,1673 @@
+<!DOCTYPE html>
+<html lang="zh-TW" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lumière Space Manifest Visual Editor</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- SortableJS for Drag and Drop -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
+
+  <!-- SweetAlert2 -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <!-- DOMPurify: sanitize user-authored ML preview markup -->
+  <script src="https://cdn.jsdelivr.net/npm/dompurify@3.2.6/dist/purify.min.js"></script>
+  <!-- GSAP: optional motion polish; CSS animations remain as a fallback -->
+  <script async src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
+  <style>
+    :root {
+      --font-lumiere: system-ui, "Segoe UI", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
+    }
+    
+    body {
+      font-family: var(--font-lumiere) !important;
+      background-color: #050505;
+      color: #e5e5e5;
+      font-size: 14px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    ::-webkit-scrollbar { width: 4px; height: 4px; }
+    ::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.4); }
+    ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.15); border-radius: 2px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.3); }
+
+    .glass-panel {
+      background: rgba(12, 12, 14, 0.75);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    
+    .glass-panel-elevated {
+      background: rgba(18, 18, 22, 0.85);
+      backdrop-filter: blur(24px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .ghost {
+      opacity: 0.3;
+      border: 1px dashed rgba(255, 255, 255, 0.4) !important;
+      background: rgba(255, 255, 255, 0.05) !important;
+    }
+
+    .btn-gallery {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      letter-spacing: 0.15em;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .btn-gallery:hover {
+      background: rgba(255, 255, 255, 0.95);
+      color: #000;
+      border-color: rgba(255, 255, 255, 0.95);
+      box-shadow: 0 0 25px rgba(255, 255, 255, 0.15);
+    }
+
+    .btn-gallery-primary {
+      background: #ffffff;
+      color: #000000;
+      border: 1px solid #ffffff;
+      letter-spacing: 0.18em;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .btn-gallery-primary:hover {
+      background: #d4d4d4;
+      border-color: #d4d4d4;
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.25);
+    }
+
+    input[type=range] {
+      -webkit-appearance: none;
+      background: rgba(255, 255, 255, 0.1);
+      height: 4px;
+      border-radius: 2px;
+    }
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      height: 14px;
+      width: 14px;
+      border-radius: 50%;
+      background: #ffffff;
+      cursor: pointer;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    }
+
+    [class*="text-[8px]"],
+    [class*="text-[9px]"],
+    [class*="text-[10px]"] {
+      font-size: 12px !important;
+      line-height: 1.45 !important;
+      letter-spacing: 0.035em !important;
+    }
+    [class*="text-[11px]"], [class*="text-[12px]"], [class~="text-xs"] {
+      font-size: 13px !important;
+      line-height: 1.5 !important;
+    }
+    [class~="text-sm"] {
+      font-size: 14px !important;
+      line-height: 1.5 !important;
+    }
+
+    [class~="font-extralight"] { font-weight: 400 !important; }
+    [class~="font-light"], [class~="font-normal"] { font-weight: 500 !important; }
+
+    [class~="text-neutral-700"] { color: #92929c !important; }
+    [class~="text-neutral-600"] { color: #a8a8b2 !important; }
+    [class~="text-neutral-500"] { color: #b6b6c0 !important; }
+    [class~="text-neutral-400"] { color: #c6c6ce !important; }
+
+    input:not([type="range"]), select, textarea {
+      font-size: 14px !important;
+      font-weight: 500 !important;
+      line-height: 1.5 !important;
+      border-color: rgba(255, 255, 255, 0.22) !important;
+    }
+    input:not([type="range"]):focus, select:focus, textarea:focus, button:focus-visible, label:focus-within {
+      outline: 2px solid rgba(255, 255, 255, 0.72) !important;
+      outline-offset: 2px;
+    }
+    button { font-weight: 500; }
+    .drag-handle, .slide-drag-handle { font-size: 14px !important; }
+
+    :root {
+      --motion-ease: cubic-bezier(0.22, 1, 0.36, 1);
+      --motion-fast: 160ms;
+      --motion-medium: 280ms;
+      --motion-slow: 520ms;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    button, .btn-gallery, .btn-gallery-primary, label[for], .slide-item,
+    #activeModulesList [data-id], #inactiveModulesList [data-id],
+    input:not([type="range"]), select, textarea {
+      transition-timing-function: var(--motion-ease);
+    }
+
+    button:not(:disabled), .btn-gallery, .btn-gallery-primary {
+      transform-origin: center;
+      transition: color var(--motion-fast) ease,
+                  background-color var(--motion-fast) ease,
+                  border-color var(--motion-fast) ease,
+                  box-shadow var(--motion-medium) var(--motion-ease),
+                  transform var(--motion-fast) var(--motion-ease),
+                  opacity var(--motion-fast) ease;
+    }
+    button:not(:disabled):active, .btn-gallery:active, .btn-gallery-primary:active {
+      transform: scale(0.975);
+    }
+    button:disabled { cursor: not-allowed !important; }
+    button:disabled:hover, button:disabled:active { transform: none !important; box-shadow: none !important; }
+
+    .btn-gallery:hover, .btn-gallery-primary:hover {
+      transform: translateY(-1px);
+    }
+    .btn-gallery-primary:active { transform: scale(0.975); }
+
+    input:not([type="range"]), select, textarea {
+      transition: border-color var(--motion-fast) ease, box-shadow var(--motion-fast) ease, background-color var(--motion-fast) ease;
+    }
+    input:not([type="range"]):focus, select:focus, textarea:focus {
+      box-shadow: 0 0 0 3px rgba(255,255,255,0.055);
+    }
+
+    #slideList > div {
+      transition: background-color var(--motion-fast) ease, border-color var(--motion-fast) ease,
+                  box-shadow var(--motion-medium) var(--motion-ease), opacity var(--motion-fast) ease;
+    }
+    #slideList > div:hover:not(.bg-white\/10) {
+      border-color: rgba(255,255,255,0.22) !important;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+    }
+    #slideList > div img { transition: filter var(--motion-medium) ease, border-color var(--motion-fast) ease; }
+    #slideList > div:hover img { filter: saturate(1.08) contrast(1.03); }
+
+    #activeModulesList [data-id], #inactiveModulesList [data-id] {
+      transition: border-color var(--motion-fast) ease, background-color var(--motion-fast) ease,
+                  box-shadow var(--motion-medium) var(--motion-ease), opacity var(--motion-fast) ease;
+    }
+    .module-card { cursor: grab; }
+    .module-card:active { cursor: grabbing; }
+    .module-card input, .module-card textarea, .module-card select,
+    .module-card button, .module-card a, .module-card [contenteditable="true"] { cursor: auto; }
+    .module-card button { cursor: pointer; }
+    .module-chosen { border-color: rgba(255,255,255,0.35) !important; box-shadow: 0 0 0 1px rgba(255,255,255,0.1), 0 12px 28px rgba(0,0,0,0.24) !important; }
+    .module-dragging { opacity: 0.96; }
+
+    #previewContainer { perspective: 1000px; }
+    #mediaWrapper { 
+      will-change: transform, opacity, width, height;
+      transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    #imgPreview, #videoPreview { 
+      backface-visibility: hidden; 
+      object-fit: cover;
+      width: 100%;
+      height: 100%;
+    }
+    #mlCardWrapper { transform-origin: bottom right; }
+
+    @keyframes lumiere-header-in { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes lumiere-left-in { from { opacity: 0; transform: translateX(-12px); } to { opacity: 1; transform: translateX(0); } }
+    @keyframes lumiere-right-in { from { opacity: 0; transform: translateX(12px); } to { opacity: 1; transform: translateX(0); } }
+    @keyframes lumiere-stage-in { from { opacity: 0; filter: blur(3px); } to { opacity: 1; filter: blur(0); } }
+    @keyframes lumiere-media-in { from { opacity: 0.25; filter: blur(5px); } to { opacity: 1; filter: blur(0); } }
+    @keyframes lumiere-panel-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes lumiere-panel-out { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-5px); } }
+    @keyframes lumiere-ml-in { from { opacity: 0; transform: translateY(12px) scale(0.985); } to { opacity: 1; transform: translateY(0) scale(1); } }
+    @keyframes lumiere-module-in { from { opacity: 0; filter: blur(2px); } to { opacity: 1; filter: blur(0); } }
+    @keyframes lumiere-selection-in { from { opacity: 0.62; } to { opacity: 1; } }
+    @keyframes lumiere-overlay-in { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes lumiere-dialog-in { from { opacity: 0; transform: translateY(12px) scale(0.99); } to { opacity: 1; transform: translateY(0) scale(1); } }
+
+    body.motion-fallback-ready .motion-header { animation: lumiere-header-in 420ms var(--motion-ease); }
+    body.motion-fallback-ready .workspace-sidebar-left { animation: lumiere-left-in 480ms var(--motion-ease); }
+    body.motion-fallback-ready .workspace-stage { animation: lumiere-stage-in 560ms var(--motion-ease); }
+    body.motion-fallback-ready .workspace-sidebar-right { animation: lumiere-right-in 480ms var(--motion-ease); }
+
+    .motion-media-enter { animation: lumiere-media-in 360ms var(--motion-ease); }
+    .motion-panel-enter { animation: lumiere-panel-in 240ms var(--motion-ease); }
+    .motion-panel-exit { animation: lumiere-panel-out 160ms ease-in both; }
+    .motion-ml-enter { animation: lumiere-ml-in 320ms var(--motion-ease); }
+    .motion-module-enter { animation: lumiere-module-in 300ms var(--motion-ease); }
+    .motion-selection-enter { animation: lumiere-selection-in 240ms ease-out; }
+
+    #modalGlobal.flex, #modalExport.flex { animation: lumiere-overlay-in 180ms ease-out both; }
+    #modalGlobal.flex > div, #modalExport.flex > div { animation: lumiere-dialog-in 260ms var(--motion-ease) both; }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto !important; }
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
+</head>
+<body class="bg-[#050505] text-neutral-200 h-screen flex flex-col overflow-hidden select-none">
+
+  <!-- Gallery Entrance Welcome Overlay -->
+  <div id="welcomeOverlay" class="fixed inset-0 bg-black z-50 flex flex-col items-center justify-center p-6 text-center transition-opacity duration-700">
+    <div class="flex flex-col items-center space-y-12">
+      <h1 class="text-2xl md:text-3xl font-light tracking-[0.4em] text-white uppercase pl-2">
+        L U M I È R E &nbsp; S P A C E
+      </h1>
+
+      <label class="px-8 py-2.5 bg-black border border-neutral-800 hover:border-neutral-500 text-neutral-300 text-xs tracking-[0.25em] uppercase cursor-pointer transition-all duration-300 inline-block hover:text-white">
+        <span>開啟資料夾</span>
+        <input type="file" id="welcomeFolderInput" webkitdirectory directory multiple class="hidden">
+      </label>
+    </div>
+  </div>
+
+  <!-- Top Navigation Header -->
+  <header class="motion-header h-16 bg-[#08080a] border-b border-white/10 px-8 flex items-center justify-between z-20 shrink-0">
+    <div class="flex items-center space-x-4">
+      <div class="w-8 h-8 rounded-full border border-white/20 flex items-center justify-center text-xs text-white bg-white/5">
+        <i class="fa-solid fa-cube"></i>
+      </div>
+      <div>
+        <h1 class="text-sm font-light tracking-[0.25em] text-white uppercase">
+          L U M I È R E &nbsp; S P A C E
+        </h1>
+        <p class="text-[10px] text-neutral-500 tracking-widest font-mono">MANIFEST VISUAL EDITOR</p>
+      </div>
+    </div>
+
+    <!-- Header Actions -->
+    <div class="flex items-center space-x-3">
+      <label class="btn-gallery px-4 py-2 text-[11px] text-neutral-300 uppercase cursor-pointer flex items-center gap-2">
+        <i class="fa-solid fa-folder-open text-xs"></i>
+        <span>選擇資料夾</span>
+        <input type="file" id="folderInput" webkitdirectory directory multiple class="hidden">
+      </label>
+      <label class="btn-gallery px-3 py-2 text-[11px] text-neutral-300 cursor-pointer flex items-center gap-2" title="新增圖片或影片">
+        <i class="fa-solid fa-plus"></i><span>新增媒體</span>
+        <input type="file" id="mediaInput" accept="image/*,video/*" multiple class="hidden">
+      </label>
+      <button id="btnDuplicate" class="btn-gallery px-3 py-2 text-[11px] text-neutral-300 flex items-center gap-2" title="複製目前作品">
+        <i class="fa-regular fa-copy"></i><span>複製作品</span>
+      </button>
+      
+      <button id="btnOpenGlobal" class="btn-gallery px-4 py-2 text-[11px] text-neutral-300 uppercase flex items-center gap-2">
+        <i class="fa-solid fa-layer-group text-xs text-neutral-400"></i>
+        <span>樓層資訊 (G_LEVEL)</span>
+      </button>
+      
+      <button id="btnExport" class="btn-gallery-primary px-5 py-2 text-[11px] uppercase flex items-center gap-2">
+        <i class="fa-solid fa-download text-xs"></i>
+        <span>匯出 JSON</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Workspace Container -->
+  <div class="flex-1 flex overflow-hidden">
+    
+    <!-- Left Sidebar: Artwork List -->
+    <div class="workspace-sidebar-left w-72 bg-[#08080a] border-r border-white/10 flex flex-col shrink-0">
+      <div class="p-4 border-b border-white/10 flex items-center justify-between text-[11px] font-light tracking-[0.2em] text-neutral-400 uppercase">
+        <span class="flex items-center gap-2">
+          <i class="fa-solid fa-list-ul text-xs"></i> 展出作品 (<span id="itemCount">0</span>)
+        </span>
+      </div>
+      
+      <div class="px-4 py-2 border-b border-white/5 flex items-center justify-between text-[10px] text-neutral-500">
+        <span>像簡報一樣編排作品</span>
+      </div>
+      <div id="slideList" class="flex-1 overflow-y-auto p-3 space-y-2">
+        <!-- Dynamically injected items -->
+      </div>
+    </div>
+
+    <!-- Center Panel: Artwork Canvas & Physical ML Card Preview -->
+    <div class="workspace-stage flex-1 bg-[#030304] flex flex-col relative overflow-hidden">
+      
+      <!-- Collapsible Base Info Bar -->
+      <div class="absolute top-5 left-6 right-6 z-20 flex flex-col gap-2">
+        <div class="glass-panel px-5 py-2.5 rounded-none text-xs text-neutral-300 flex items-center justify-between shadow-2xl">
+          <div class="flex items-center gap-4">
+            <span id="previewLevelBadge" class="bg-white/10 text-white border border-white/20 px-3 py-0.5 text-[10px] tracking-widest uppercase font-mono">
+              LEVEL: 0
+            </span>
+            <span id="previewFileName" class="font-light tracking-wider text-neutral-200 truncate max-w-sm">
+              尚未選擇作品
+            </span>
+          </div>
+          <button id="btnToggleBaseInfo" class="text-neutral-300 hover:text-white flex items-center gap-2 text-[11px] tracking-widest uppercase transition px-3 py-1 border border-white/10 hover:border-white/30 bg-white/5">
+            <i class="fa-solid fa-sliders text-xs"></i>
+            <span id="baseInfoToggleText">展開基礎屬性</span>
+            <i id="baseInfoChevron" class="fa-solid fa-chevron-down text-[10px] transition-transform duration-300"></i>
+          </button>
+        </div>
+
+        <!-- Collapsible Form -->
+        <div id="basePropertiesForm" class="glass-panel-elevated p-5 rounded-none shadow-2xl text-xs space-y-4 hidden transition-all duration-300">
+          <div class="flex items-center justify-between text-neutral-400 font-light tracking-[0.2em] uppercase text-[10px]">
+            <span class="flex items-center gap-2"><i class="fa-solid fa-lock text-white/50"></i> 基礎檔案資訊 (固定)</span>
+            <button id="btnDeleteCurrent" class="text-red-400 hover:text-red-300 flex items-center gap-1.5 tracking-widest transition">
+              <i class="fa-solid fa-trash-can text-xs"></i> 刪除此作品
+            </button>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="md:col-span-1">
+              <label class="block text-neutral-400 text-[10px] tracking-widest uppercase mb-1.5">檔名 / URL (URL/FILE)</label>
+              <input type="text" id="fieldUrl" class="w-full bg-black/60 border border-white/10 rounded-none px-3 py-1.5 text-neutral-200 focus:border-white/40 focus:outline-none font-mono text-xs">
+            </div>
+            <div>
+              <label class="block text-neutral-400 text-[10px] tracking-widest uppercase mb-1.5">檔案類型 (TYPE)</label>
+              <select id="fieldType" class="w-full bg-black/60 border border-white/10 rounded-none px-3 py-1.5 text-neutral-200 focus:border-white/40 focus:outline-none text-xs">
+                <option value="image/jpeg">image/jpeg</option>
+                <option value="image/png">image/png</option>
+                <option value="image/gif">image/gif</option>
+                <option value="image/webp">image/webp</option>
+                <option value="video/mp4">video/mp4</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-neutral-400 text-[10px] tracking-widest uppercase mb-1.5">分配樓層 (G_LEVEL)</label>
+              <input type="number" id="fieldLevel" min="0" value="0" class="w-full bg-black/60 border border-white/10 rounded-none px-3 py-1.5 text-neutral-200 focus:border-white/40 focus:outline-none font-mono text-xs">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Artwork Display Canvas -->
+      <div class="flex-1 flex items-center justify-center p-8 relative pt-24 pb-16">
+        <div id="previewContainer" class="relative max-w-full max-h-full w-full h-full flex items-center justify-center transition-all duration-300">
+          
+          <div id="emptyState" class="text-center text-neutral-600 space-y-3">
+            <i class="fa-solid fa-eye-slash text-4xl font-extralight text-neutral-700"></i>
+            <p class="text-xs tracking-[0.2em] uppercase font-light">請由左側選擇作品或載入專案資料夾</p>
+          </div>
+
+          <div id="mediaWrapper" class="hidden relative shadow-2xl overflow-hidden border border-white/15 bg-black/60 transition-all duration-300 flex items-center justify-center">
+            <img id="imgPreview" class="hidden object-cover" src="" alt="Preview">
+            <video id="videoPreview" class="hidden object-cover" controls autoplay loop muted></video>
+          </div>
+        </div>
+
+        <!-- Physical Gallery Description Card Preview (ML) -->
+        <div id="mlCardWrapper" class="hidden absolute bottom-8 right-8 w-80 glass-panel p-5 rounded-none shadow-2xl border border-white/15 text-xs font-serif max-h-72 overflow-y-auto z-10">
+          <div class="text-[9px] text-neutral-400 font-sans mb-3 uppercase tracking-[0.25em] flex justify-between items-center border-b border-white/10 pb-2">
+            <span>實體說明牌 (ML 預覽)</span>
+            <i class="fa-solid fa-circle-info text-neutral-400"></i>
+          </div>
+          <div id="mlCardContent" class="space-y-2 leading-relaxed text-neutral-200 font-light"></div>
+        </div>
+      </div>
+
+      <!-- Bottom Control Navigation Bar -->
+      <div class="h-12 bg-[#08080a] border-t border-white/10 px-8 flex items-center justify-between text-xs text-neutral-400 shrink-0">
+        <div class="flex items-center space-x-6 tracking-widest text-[11px]">
+          <button id="btnPrevSlide" class="hover:text-white transition flex items-center gap-2 uppercase">
+            <i class="fa-solid fa-chevron-left text-[10px]"></i> 上一張
+          </button>
+          <span id="slideIndexText" class="font-mono text-neutral-300">0 / 0</span>
+          <button id="btnNextSlide" class="hover:text-white transition flex items-center gap-2 uppercase">
+            下一張 <i class="fa-solid fa-chevron-right text-[10px]"></i>
+          </button>
+        </div>
+        <div class="flex items-center space-x-2 text-neutral-500 text-[10px] tracking-widest uppercase">
+          <i class="fa-solid fa-keyboard text-xs"></i>
+          <span>可按鍵盤 ↑ / ↓ 鍵快速切換作品</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Sidebar: Drag-and-Drop Property Modules -->
+    <div class="workspace-sidebar-right w-96 bg-[#08080a] border-l border-white/10 flex flex-col shrink-0">
+      <div class="p-4 border-b border-white/10">
+        <h2 class="font-light text-xs text-white tracking-[0.2em] uppercase flex items-center gap-2">
+          <i class="fa-solid fa-sliders text-neutral-400"></i>
+          <span>選用屬性模組</span>
+        </h2>
+        <p class="text-[10px] text-neutral-500 tracking-wider mt-1 font-light">
+          整塊模組皆可拖曳；按＋／－點擊啟用或停用，點標題可展開編輯
+        </p>
+      </div>
+
+      <div class="p-4 space-y-6 text-xs flex-1 overflow-y-auto">
+        <!-- Active Property Modules -->
+        <div>
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-white font-light text-[10px] tracking-[0.2em] uppercase flex items-center gap-2">
+              <i class="fa-solid fa-circle-check text-white"></i> 已啟用屬性 (<span id="activeModuleCount">0</span>)
+            </span>
+            <span class="text-[9px] text-neutral-500 tracking-wider">整塊可拖曳排序</span>
+          </div>
+          <div id="activeModulesList" class="space-y-3 min-h-[90px] p-2 bg-black/40 rounded-none border border-dashed border-white/10 transition">
+            <div class="text-center py-6 text-neutral-600 text-xs tracking-widest uppercase font-light">請選擇左側作品</div>
+          </div>
+        </div>
+
+        <!-- Inactive Property Modules -->
+        <div>
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-neutral-500 font-light text-[10px] tracking-[0.2em] uppercase flex items-center gap-2">
+              <i class="fa-solid fa-circle-plus text-neutral-500"></i> 未啟用屬性模組
+            </span>
+            <span class="text-[9px] text-neutral-500 tracking-wider">按＋啟用／拖到上方啟用</span>
+          </div>
+          <div id="inactiveModulesList" class="space-y-2.5 min-h-[70px] p-2 bg-black/20 rounded-none border border-dashed border-white/5 transition">
+            <!-- Inactive modules will be injected here -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Global Level Settings Modal (g_level) -->
+  <div id="modalGlobal" class="fixed inset-0 bg-black/80 backdrop-blur-md hidden items-center justify-center z-50">
+    <div class="glass-panel-elevated border border-white/15 w-[520px] rounded-none shadow-2xl overflow-hidden flex flex-col">
+      <div class="p-5 border-b border-white/10 flex justify-between items-center">
+        <h3 class="font-light text-xs text-white tracking-[0.25em] uppercase flex items-center gap-2">
+          <i class="fa-solid fa-layer-group text-neutral-300"></i>
+          <span>樓層與背景音樂資訊 (G_LEVEL)</span>
+        </h3>
+        <button id="btnCloseGlobal" class="text-neutral-400 hover:text-white text-sm"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div id="globalLevelsList" class="p-5 space-y-4 max-h-[60vh] overflow-y-auto"></div>
+      <div class="p-4 bg-black/60 border-t border-white/10 flex justify-between items-center">
+        <button id="btnAddLevel" class="btn-gallery px-3.5 py-1.5 text-[10px] uppercase text-neutral-300 flex items-center gap-1.5">
+          <i class="fa-solid fa-plus text-[9px]"></i> 新增樓層定義
+        </button>
+        <button id="btnSaveGlobal" class="btn-gallery-primary px-5 py-1.5 text-[10px] uppercase">
+          確定
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- JSON Export Modal -->
+  <div id="modalExport" class="fixed inset-0 bg-black/80 backdrop-blur-md hidden items-center justify-center z-50">
+    <div class="glass-panel-elevated border border-white/15 w-[680px] rounded-none shadow-2xl overflow-hidden flex flex-col">
+      <div class="p-5 border-b border-white/10 flex justify-between items-center">
+        <h3 class="font-light text-xs text-white tracking-[0.25em] uppercase flex items-center gap-2">
+          <i class="fa-solid fa-code text-neutral-300"></i>
+          <span>匯出 JSON 展覽定義檔</span>
+        </h3>
+        <button id="btnCloseExport" class="text-neutral-400 hover:text-white text-sm"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="p-5 space-y-4">
+        <div class="flex items-center space-x-6 bg-black/50 p-3 border border-white/10 text-xs">
+          <span class="text-neutral-400 font-light text-[10px] tracking-widest uppercase">導出模式:</span>
+          <label class="flex items-center space-x-2 cursor-pointer text-neutral-200">
+            <input type="radio" name="exportMode" value="online" checked class="accent-white">
+            <span class="text-[11px] tracking-wider">線上部署模式 (使用 url)</span>
+          </label>
+          <label class="flex items-center space-x-2 cursor-pointer text-neutral-200">
+            <input type="radio" name="exportMode" value="local" class="accent-white">
+            <span class="text-[11px] tracking-wider">本地測試模式 (使用 file)</span>
+          </label>
+        </div>
+        <div class="relative">
+          <textarea id="jsonOutput" readonly rows="13" class="w-full bg-black/80 border border-white/10 rounded-none p-4 text-emerald-400 font-mono text-[11px] focus:outline-none resize-none leading-relaxed"></textarea>
+          <button id="btnCopyJson" class="absolute top-3 right-3 btn-gallery px-3 py-1 text-[10px] uppercase text-neutral-200 flex items-center gap-1.5">
+            <i class="fa-regular fa-copy"></i> 複製內容
+          </button>
+        </div>
+      </div>
+      <div class="p-4 bg-black/60 border-t border-white/10 flex justify-between items-center">
+        <span class="text-[10px] text-neutral-500 tracking-wider">點擊下方按鈕即可直接儲存 JSON 檔案</span>
+        <button id="btnDownloadManifest" class="btn-gallery-primary px-6 py-2 text-[10px] uppercase flex items-center gap-2">
+          <i class="fa-solid fa-floppy-disk"></i>
+          <span id="downloadBtnText">下載 manifest.json</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let items = []; 
+    let levels = [{ g_level: "0", g_title: "主展廳", g_subtitle: "歡迎光臨展覽", music: "" }];
+    let selectedIndex = -1;
+    let expandedModuleId = null;
+    let isBaseInfoOpen = false;
+
+    const LumiereSwal = Swal.mixin({
+      customClass: {
+        popup: 'bg-[#0a0a0c] border border-white/15 text-neutral-200 rounded-none shadow-2xl font-sans text-xs',
+        title: 'text-white text-sm tracking-[0.2em] font-light uppercase border-b border-white/10 pb-3 mb-2',
+        htmlContainer: 'text-neutral-300 text-xs tracking-wider font-light leading-relaxed my-2',
+        confirmButton: 'btn-gallery-primary px-5 py-2 text-[10px] uppercase cursor-pointer mx-1',
+        cancelButton: 'btn-gallery px-5 py-2 text-[10px] uppercase cursor-pointer mx-1',
+        denyButton: 'btn-gallery px-5 py-2 text-[10px] uppercase cursor-pointer mx-1'
+      },
+      buttonsStyling: false,
+      background: '#0a0a0c',
+      color: '#e5e5e5'
+    });
+
+    const MODULE_DEFINITIONS = {
+      title_info: { id: 'title_info', name: '標題與說明 (TITLE / INFO)', icon: 'fa-solid fa-circle-info text-neutral-300' },
+      transform: { id: 'transform', name: '形變與比例 (SIZE / ROTATION)', icon: 'fa-solid fa-up-right-and-down-left-from-center text-neutral-300' },
+      pbr: { id: 'pbr', name: 'PBR 光影材質 (PBR_M/S/R)', icon: 'fa-solid fa-wand-magic-sparkles text-neutral-300' },
+      ml: { id: 'ml', name: '實體作品說明牌 (ML)', icon: 'fa-solid fa-square-poll-vertical text-neutral-300' },
+      code: { id: 'code', name: '動態程式碼參數 (CODE)', icon: 'fa-solid fa-code text-neutral-300' }
+    };
+
+    const D = {
+      welcomeOverlay: document.getElementById('welcomeOverlay'),
+      welcomeFolderInput: document.getElementById('welcomeFolderInput'),
+      folderInput: document.getElementById('folderInput'),
+      slideList: document.getElementById('slideList'),
+      itemCount: document.getElementById('itemCount'),
+      emptyState: document.getElementById('emptyState'),
+      mediaWrapper: document.getElementById('mediaWrapper'),
+      imgPreview: document.getElementById('imgPreview'),
+      videoPreview: document.getElementById('videoPreview'),
+      previewFileName: document.getElementById('previewFileName'),
+      previewLevelBadge: document.getElementById('previewLevelBadge'),
+      mlCardWrapper: document.getElementById('mlCardWrapper'),
+      mlCardContent: document.getElementById('mlCardContent'),
+      slideIndexText: document.getElementById('slideIndexText'),
+      fieldUrl: document.getElementById('fieldUrl'),
+      fieldType: document.getElementById('fieldType'),
+      fieldLevel: document.getElementById('fieldLevel'),
+      activeModulesList: document.getElementById('activeModulesList'),
+      inactiveModulesList: document.getElementById('inactiveModulesList'),
+      activeModuleCount: document.getElementById('activeModuleCount'),
+      btnPrevSlide: document.getElementById('btnPrevSlide'),
+      btnNextSlide: document.getElementById('btnNextSlide'),
+      btnDeleteCurrent: document.getElementById('btnDeleteCurrent'),
+      basePropertiesForm: document.getElementById('basePropertiesForm'),
+      btnToggleBaseInfo: document.getElementById('btnToggleBaseInfo'),
+      baseInfoToggleText: document.getElementById('baseInfoToggleText'),
+      baseInfoChevron: document.getElementById('baseInfoChevron'),
+      previewContainer: document.getElementById('previewContainer')
+    };
+
+    // Motion helpers
+    const reducedMotionQuery = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
+    const motionTokens = new WeakMap();
+    const motionTimers = new WeakMap();
+    const isReducedMotion = () => !!(reducedMotionQuery && reducedMotionQuery.matches);
+
+    function stopElementMotion(element) {
+      if (!element) return;
+      const timer = motionTimers.get(element);
+      if (timer) clearTimeout(timer);
+      motionTimers.delete(element);
+      motionTokens.set(element, (motionTokens.get(element) || 0) + 1);
+      if (window.gsap) gsap.killTweensOf(element);
+      element.classList.remove('motion-media-enter', 'motion-panel-enter', 'motion-panel-exit', 'motion-ml-enter', 'motion-module-enter', 'motion-selection-enter');
+    }
+
+    function playMotion(element, preset = 'panel') {
+      if (!element) return;
+      stopElementMotion(element);
+      if (isReducedMotion()) return;
+      const presets = {
+        media: { from: { opacity: 0.25, filter: 'blur(5px)' }, to: { opacity: 1, filter: 'blur(0px)', duration: 0.36, ease: 'power2.out', clearProps: 'filter' }, css: 'motion-media-enter' },
+        panel: { from: { opacity: 0, y: 8 }, to: { opacity: 1, y: 0, duration: 0.24, ease: 'power2.out', clearProps: 'transform,opacity' }, css: 'motion-panel-enter' },
+        ml: { from: { opacity: 0, y: 12, scale: 0.985 }, to: { opacity: 1, y: 0, scale: 1, duration: 0.32, ease: 'power3.out', clearProps: 'transform,opacity' }, css: 'motion-ml-enter' },
+        module: { from: { opacity: 0, filter: 'blur(2px)' }, to: { opacity: 1, filter: 'blur(0px)', duration: 0.3, ease: 'power2.out', clearProps: 'filter,opacity' }, css: 'motion-module-enter' },
+        selection: { from: { opacity: 0.62 }, to: { opacity: 1, duration: 0.24, ease: 'power2.out', clearProps: 'opacity' }, css: 'motion-selection-enter' }
+      };
+      const motion = presets[preset] || presets.panel;
+      if (window.gsap) {
+        gsap.fromTo(element, { ...motion.from }, { ...motion.to });
+      } else {
+        element.classList.add(motion.css);
+        const token = motionTokens.get(element);
+        const timer = setTimeout(() => {
+          if (motionTokens.get(element) === token) element.classList.remove(motion.css);
+          motionTimers.delete(element);
+        }, 650);
+        motionTimers.set(element, timer);
+      }
+    }
+
+    function animateOut(element, onComplete, preset = 'panel') {
+      if (!element) { if (onComplete) onComplete(); return; }
+      stopElementMotion(element);
+      if (isReducedMotion()) { if (onComplete) onComplete(); return; }
+      const token = motionTokens.get(element);
+      const finish = () => {
+        if (motionTokens.get(element) !== token) return;
+        if (window.gsap) gsap.set(element, { clearProps: 'opacity,transform' });
+        element.classList.remove('motion-panel-exit');
+        motionTimers.delete(element);
+        if (onComplete) onComplete();
+      };
+      if (window.gsap) {
+        gsap.to(element, { opacity: 0, y: preset === 'modal' ? -3 : -5, duration: preset === 'modal' ? 0.18 : 0.16, ease: 'power1.in', onComplete: finish });
+      } else {
+        element.classList.add('motion-panel-exit');
+        const timer = setTimeout(finish, 165);
+        motionTimers.set(element, timer);
+      }
+    }
+
+    function animateChildren(container, preset = 'module') {
+      if (!container || isReducedMotion()) return;
+      const children = Array.from(container.querySelectorAll(':scope > [data-id]'));
+      if (!children.length) return;
+      if (window.gsap) {
+        gsap.fromTo(children, { opacity: 0, filter: 'blur(2px)' }, {
+          opacity: 1, filter: 'blur(0px)', duration: 0.28, stagger: 0.035,
+          ease: 'power2.out', clearProps: 'opacity,filter'
+        });
+      } else {
+        children.forEach((child, index) => {
+          child.classList.remove('motion-module-enter');
+          child.style.animationDelay = `${Math.min(index * 35, 140)}ms`;
+          child.classList.add('motion-module-enter');
+          const timer = setTimeout(() => { child.classList.remove('motion-module-enter'); child.style.animationDelay = ''; }, 500);
+          motionTimers.set(child, timer);
+        });
+      }
+    }
+
+    D.btnToggleBaseInfo.onclick = () => {
+      isBaseInfoOpen = !isBaseInfoOpen;
+      if (isBaseInfoOpen) {
+        D.basePropertiesForm.classList.remove('hidden');
+        playMotion(D.basePropertiesForm, 'panel');
+        D.baseInfoToggleText.innerText = "收合基礎屬性";
+        D.baseInfoChevron.classList.add('rotate-180');
+      } else {
+        animateOut(D.basePropertiesForm, () => D.basePropertiesForm.classList.add('hidden'));
+        D.baseInfoToggleText.innerText = "展開基礎屬性";
+        D.baseInfoChevron.classList.remove('rotate-180');
+      }
+    };
+
+    if (window.Sortable) {
+      new Sortable(D.slideList, {
+        animation: 200, ghostClass: 'ghost', handle: '.slide-drag-handle',
+        onEnd: (evt) => {
+          if (evt.oldIndex == null || evt.newIndex == null || evt.oldIndex === evt.newIndex) return;
+          const moved = items.splice(evt.oldIndex, 1)[0];
+          items.splice(evt.newIndex, 0, moved);
+          selectItem(evt.newIndex);
+        }
+      });
+    }
+
+    let sortableActive, sortableInactive;
+    function initModuleSortables() {
+      if (sortableActive) sortableActive.destroy();
+      if (sortableInactive) sortableInactive.destroy();
+      if (!window.Sortable) return;
+      const options = {
+        group: { name: 'property-modules', pull: true, put: true },
+        animation: 180,
+        ghostClass: 'ghost',
+        chosenClass: 'module-chosen',
+        dragClass: 'module-dragging',
+        draggable: '[data-id]',
+        filter: 'input, textarea, button, select, option, a, [contenteditable="true"], .no-drag',
+        preventOnFilter: false,
+        fallbackOnBody: true,
+        fallbackTolerance: 5,
+        swapThreshold: 0.58,
+        onEnd: (evt) => {
+          if (evt && (evt.oldIndex !== evt.newIndex || evt.from !== evt.to)) handleModuleStateChange();
+        }
+      };
+      sortableActive = new Sortable(D.activeModulesList, { ...options, group: { name: 'property-modules', pull: true, put: true } });
+      sortableInactive = new Sortable(D.inactiveModulesList, { ...options, group: { name: 'property-modules', pull: true, put: true } });
+    }
+
+    const mediaInput = document.getElementById('mediaInput');
+
+    mediaInput.addEventListener('change', (e) => {
+      const files = Array.from(e.target.files || []);
+      if (!files.length) return;
+      files.forEach(file => {
+        const isVideo = file.type.startsWith('video/') || /\.(mp4|webm|mov)$/i.test(file.name);
+        items.push({
+          url: `/${file.name}`, localFile: file, blobUrl: URL.createObjectURL(file),
+          type: isVideo ? (file.type || 'video/mp4') : (file.type || 'image/jpeg'),
+          level: selectedIndex >= 0 ? items[selectedIndex].level : '0',
+          title: file.name.replace(/\.[^.]+$/, ''), info: '',
+          size: '0', rotation: '0', aspect_ratio: 'auto',
+          PBR_M: '0.0', PBR_S: '0.4', PBR_R: '1.0', ML: '', code: '',
+          activeModules: ['title_info', 'transform']
+        });
+      });
+      D.welcomeOverlay.classList.add('opacity-0');
+      setTimeout(() => D.welcomeOverlay.classList.add('hidden'), 700);
+      renderSlideList();
+      selectItem(items.length - files.length);
+      showToast(`已新增 ${files.length} 件媒體`, 'success');
+      mediaInput.value = '';
+    });
+
+    document.getElementById('btnDuplicate').addEventListener('click', () => {
+      if (selectedIndex < 0) return showToast('請先選擇要複製的作品', 'error');
+      const original = items[selectedIndex];
+      const copy = { ...original, activeModules: [...(original.activeModules || [])],
+        title: original.title ? `${original.title}（複本）` : '作品複本',
+        blobUrl: original.blobUrl, localFile: original.localFile };
+      items.splice(selectedIndex + 1, 0, copy);
+      selectItem(selectedIndex + 1);
+      showToast('已複製作品，可獨立調整參數', 'success');
+    });
+
+    D.welcomeFolderInput.addEventListener('change', handleFolderImport);
+    D.folderInput.addEventListener('change', handleFolderImport);
+
+    async function handleFolderImport(e) {
+      const files = Array.from(e.target.files);
+      if (files.length === 0) return;
+
+      const jsonFile = files.find(f => f.name.match(/^(manifest|custom)\.json$/i)) || files.find(f => f.name.endsWith('.json'));
+      const mediaFiles = files.filter(f => f.type.startsWith('image/') || f.type.startsWith('video/') || f.name.match(/\.(jpg|jpeg|png|gif|webp|mp4|webm|mov)$/i));
+
+      items.forEach(item => { if (item.blobUrl && item.blobUrl.startsWith('blob:')) URL.revokeObjectURL(item.blobUrl); });
+      items = [];
+      levels = [];
+
+      if (jsonFile) {
+        try {
+          const text = await jsonFile.text();
+          const parsed = JSON.parse(text);
+          if (Array.isArray(parsed)) {
+            parsed.forEach(entry => {
+              if (entry.g_level !== undefined && (entry.g_title !== undefined || entry.music !== undefined || Object.keys(entry).length <= 4)) {
+                if (!levels.some(l => l.g_level === String(entry.g_level))) {
+                  levels.push({ g_level: String(entry.g_level), g_title: entry.g_title || "", g_subtitle: entry.g_subtitle || "", music: entry.music || "" });
+                }
+              }
+              if (entry.url || entry.file) {
+                const rawUrl = entry.url || entry.file;
+                const fileNameOnly = rawUrl.split('/').pop().toLowerCase();
+                const matchedFile = mediaFiles.find(f => f.name.toLowerCase() === fileNameOnly);
+                const isVideo = (entry.type && entry.type.includes('video')) || rawUrl.match(/\.(mp4|webm|mov)$/i);
+
+                const activeMods = [];
+                if (entry.title || entry.info) activeMods.push('title_info');
+                if ((entry.size !== undefined && entry.size !== "0") || (entry.rotation !== undefined && entry.rotation !== "0") || (entry.aspect_ratio && entry.aspect_ratio !== "auto")) activeMods.push('transform');
+                if ((entry.PBR_M && entry.PBR_M !== "0.0") || (entry.PBR_S && entry.PBR_S !== "0.4") || (entry.PBR_R && entry.PBR_R !== "1.0")) activeMods.push('pbr');
+                if (entry.ML) activeMods.push('ml');
+                if (entry.code) activeMods.push('code');
+
+                items.push({
+                  url: rawUrl, 
+                  localFile: matchedFile || null, 
+                  blobUrl: matchedFile ? URL.createObjectURL(matchedFile) : null,
+                  type: entry.type || (isVideo ? "video/mp4" : "image/jpeg"), 
+                  level: String(entry.g_level || entry.level || "0"),
+                  title: entry.title || "", 
+                  info: entry.info || "", 
+                  size: String(entry.size ?? "0"), 
+                  rotation: String(entry.rotation ?? "0"), 
+                  aspect_ratio: entry.aspect_ratio || "auto",
+                  PBR_M: entry.PBR_M || "0.0", 
+                  PBR_S: entry.PBR_S || "0.4", 
+                  PBR_R: entry.PBR_R || "1.0", 
+                  ML: entry.ML || "", 
+                  code: entry.code || "",
+                  activeModules: activeMods.length ? activeMods : ['title_info', 'transform']
+                });
+              }
+            });
+          }
+        } catch (err) {
+          console.error("JSON parse error:", err);
+          showToast('JSON 讀取失敗，請確認檔案格式正確；已嘗試以媒體清單建立專案', 'error');
+        }
+      }
+
+      if (items.length === 0 && mediaFiles.length > 0) {
+        mediaFiles.forEach(file => {
+          const isVideo = file.type.startsWith('video/') || file.name.match(/\.(mp4|webm|mov)$/i);
+          items.push({
+            url: `/${file.name}`, 
+            localFile: file, 
+            blobUrl: URL.createObjectURL(file),
+            type: isVideo ? "video/mp4" : (file.type || "image/jpeg"), 
+            level: "0",
+            title: "", info: "", size: "0", rotation: "0", aspect_ratio: "auto",
+            PBR_M: "0.0", PBR_S: "0.4", PBR_R: "1.0", ML: "", code: "",
+            activeModules: ['title_info', 'transform']
+          });
+        });
+      }
+
+      if (levels.length === 0) levels.push({ g_level: "0", g_title: "主展廳", g_subtitle: "歡迎光臨展覽", music: "" });
+
+      D.welcomeOverlay.classList.add('opacity-0');
+      setTimeout(() => D.welcomeOverlay.classList.add('hidden'), 700);
+
+      renderSlideList();
+      selectItem(items.length > 0 ? 0 : -1);
+      showToast(`專案載入完成，共 ${items.length} 件作品`, 'success');
+    }
+
+    function renderModulesPanel(item) {
+      if (!item) {
+        D.activeModulesList.innerHTML = '<div class="text-center py-6 text-neutral-600 text-xs tracking-widest uppercase font-light">請選擇作品</div>';
+        D.inactiveModulesList.innerHTML = '';
+        D.activeModuleCount.innerText = "0";
+        return;
+      }
+
+      D.activeModulesList.innerHTML = '';
+      D.inactiveModulesList.innerHTML = '';
+
+      const activeSet = new Set(item.activeModules || []);
+      let activeCount = 0;
+
+      const orderedActive = (item.activeModules || []).filter(id => MODULE_DEFINITIONS[id]);
+      const orderedInactive = Object.keys(MODULE_DEFINITIONS).filter(id => !activeSet.has(id));
+      orderedActive.forEach(modId => {
+        activeCount++;
+        D.activeModulesList.appendChild(createActiveModuleCard(MODULE_DEFINITIONS[modId], item, expandedModuleId === modId));
+      });
+      orderedInactive.forEach(modId => D.inactiveModulesList.appendChild(createInactiveModuleCard(MODULE_DEFINITIONS[modId])));
+      
+      D.activeModuleCount.innerText = activeCount;
+      initModuleSortables();
+      animateChildren(D.activeModulesList, 'module');
+      animateChildren(D.inactiveModulesList, 'module');
+    }
+
+    function insertMLTag(textarea, openTag, closeTag = '') {
+      if (!textarea) return;
+      const start = textarea.selectionStart;
+      const end = textarea.selectionEnd;
+      const selectedText = textarea.value.substring(start, end);
+      
+      if (selectedText) {
+        textarea.value = textarea.value.substring(0, start) + openTag + selectedText + closeTag + textarea.value.substring(end);
+        const newCaretPos = start + openTag.length + selectedText.length + closeTag.length;
+        textarea.setSelectionRange(newCaretPos, newCaretPos);
+      } else {
+        textarea.value = textarea.value.substring(0, start) + openTag + closeTag + textarea.value.substring(end);
+        const newCaretPos = start + openTag.length;
+        textarea.setSelectionRange(newCaretPos, newCaretPos);
+      }
+      textarea.focus();
+      textarea.dispatchEvent(new Event('input', { bubbles: true }));
+    }
+
+    function createActiveModuleCard(modDef, item, isExpanded) {
+      const card = document.createElement('div');
+      card.dataset.id = modDef.id;
+      card.className = "glass-panel border border-white/10 rounded-none overflow-hidden transition shadow-lg group module-card cursor-grab active:cursor-grabbing";
+
+      let formHtml = '';
+      if (isExpanded) {
+        if (modDef.id === 'title_info') {
+          formHtml = `
+            <div class="p-3.5 space-y-3 border-t border-white/10 bg-black/50">
+              <div>
+                <label class="block text-neutral-400 text-[10px] tracking-widest uppercase mb-1">作品標題 (TITLE)</label>
+                <input type="text" data-field="title" value="${escapeHtml(item.title)}" class="mod-input w-full bg-black/80 border border-white/10 rounded-none px-2.5 py-1.5 text-neutral-200 focus:border-white/40 focus:outline-none text-xs">
+              </div>
+              <div>
+                <label class="block text-neutral-400 text-[10px] tracking-widest uppercase mb-1">詳細說明 (INFO)</label>
+                <textarea data-field="info" rows="2" class="mod-input w-full bg-black/80 border border-white/10 rounded-none px-2.5 py-1.5 text-neutral-200 focus:border-white/40 focus:outline-none text-xs resize-none font-light leading-relaxed">${escapeHtml(item.info)}</textarea>
+              </div>
+            </div>`;
+        } else if (modDef.id === 'transform') {
+          const sizeVal = parseFloat(item.size) || 0;
+          const rotVal = parseFloat(item.rotation) || 0;
+          const ratioVal = item.aspect_ratio || 'auto';
+
+          let rWidth = '16', rHeight = '9';
+          if (ratioVal !== 'auto' && ratioVal.includes(':')) {
+            const parts = ratioVal.split(':');
+            rWidth = parts[0] || '1';
+            rHeight = parts[1] || '1';
+          }
+
+          formHtml = `
+            <div class="p-3.5 space-y-4 border-t border-white/10 bg-black/50">
+              <!-- 1. SIZE Slider & Input -->
+              <div>
+                <div class="flex justify-between items-center text-[10px] text-neutral-300 tracking-widest uppercase mb-1.5">
+                  <span class="flex items-center gap-1.5"><i class="fa-solid fa-magnifying-glass-plus text-neutral-400"></i> 縮放倍率 (SIZE)</span>
+                  <div class="flex items-center gap-1.5">
+                    <input type="number" step="0.05" min="-2" max="2" data-field="size_num" value="${sizeVal}" class="w-16 bg-black border border-white/20 px-1.5 py-0.5 rounded text-[10px] text-right font-mono text-white focus:outline-none">
+                    <button type="button" class="btnResetField text-[9px] text-neutral-500 hover:text-white" data-field="size" data-default="0" title="重置為 0"><i class="fa-solid fa-rotate-left"></i></button>
+                  </div>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class="text-[9px] text-neutral-500 font-mono">-2.0</span>
+                  <input type="range" min="-2" max="2" step="0.05" data-field="size_slider" value="${sizeVal}" class="mod-input w-full">
+                  <span class="text-[9px] text-neutral-500 font-mono">+2.0</span>
+                </div>
+              </div>
+
+              <!-- 2. ROTATION Slider & Input -->
+              <div>
+                <div class="flex justify-between items-center text-[10px] text-neutral-300 tracking-widest uppercase mb-1.5">
+                  <span class="flex items-center gap-1.5"><i class="fa-solid fa-rotate text-neutral-400"></i> 旋轉角度 (ROTATION)</span>
+                  <div class="flex items-center gap-1.5">
+                    <input type="number" step="1" min="-180" max="180" data-field="rotation_num" value="${rotVal}" class="w-16 bg-black border border-white/20 px-1.5 py-0.5 rounded text-[10px] text-right font-mono text-white focus:outline-none">
+                    <span class="text-[10px] text-neutral-400">°</span>
+                    <button type="button" class="btnResetField text-[9px] text-neutral-500 hover:text-white" data-field="rotation" data-default="0" title="重置為 0"><i class="fa-solid fa-rotate-left"></i></button>
+                  </div>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class="text-[9px] text-neutral-500 font-mono">-180°</span>
+                  <input type="range" min="-180" max="180" step="1" data-field="rotation_slider" value="${rotVal}" class="mod-input w-full">
+                  <span class="text-[9px] text-neutral-500 font-mono">+180°</span>
+                </div>
+                <div class="flex justify-between mt-1.5 gap-1">
+                  <button type="button" class="btnQuickRot px-1.5 py-0.5 bg-white/5 hover:bg-white/20 text-[9px] text-neutral-300 border border-white/10" data-rot="90">90° (逆時針)</button>
+                  <button type="button" class="btnQuickRot px-1.5 py-0.5 bg-white/5 hover:bg-white/20 text-[9px] text-neutral-300 border border-white/10" data-rot="0">0° (歸零)</button>
+                  <button type="button" class="btnQuickRot px-1.5 py-0.5 bg-white/5 hover:bg-white/20 text-[9px] text-neutral-300 border border-white/10" data-rot="-90">-90° (順時針)</button>
+                  <button type="button" class="btnQuickRot px-1.5 py-0.5 bg-white/5 hover:bg-white/20 text-[9px] text-neutral-300 border border-white/10" data-rot="180">180°</button>
+                </div>
+              </div>
+
+              <!-- 3. ASPECT_RATIO Custom Inputs & Presets -->
+              <div>
+                <div class="flex justify-between items-center text-[10px] text-neutral-300 tracking-widest uppercase mb-1.5">
+                  <span class="flex items-center gap-1.5"><i class="fa-solid fa-crop-simple text-neutral-400"></i> 中央裁切比例 (ASPECT_RATIO)</span>
+                  <span class="val-aspect_ratio font-mono text-white bg-white/10 px-1.5 py-0.5 rounded text-[10px]">${ratioVal}</span>
+                </div>
+                
+                <div class="flex items-center gap-2 mb-2">
+                  <label class="flex items-center gap-1 cursor-pointer text-[10px] text-neutral-300">
+                    <input type="radio" name="ratio_type" value="auto" ${ratioVal === 'auto' ? 'checked' : ''} class="radioRatioAuto accent-white">
+                    <span>自動 (auto)</span>
+                  </label>
+                  <label class="flex items-center gap-1 cursor-pointer text-[10px] text-neutral-300">
+                    <input type="radio" name="ratio_type" value="custom" ${ratioVal !== 'auto' ? 'checked' : ''} class="radioRatioCustom accent-white">
+                    <span>自訂比例</span>
+                  </label>
+                </div>
+
+                <div class="flex items-center gap-2 ${ratioVal === 'auto' ? 'opacity-40 pointer-events-none' : ''}" id="ratioCustomControls">
+                  <input type="number" min="0.1" step="0.1" value="${rWidth}" data-field="ratio_w" class="w-full bg-black border border-white/20 px-2 py-1 text-center text-xs font-mono text-white focus:outline-none">
+                  <span class="text-neutral-400 font-bold">:</span>
+                  <input type="number" min="0.1" step="0.1" value="${rHeight}" data-field="ratio_h" class="w-full bg-black border border-white/20 px-2 py-1 text-center text-xs font-mono text-white focus:outline-none">
+                </div>
+
+                <div class="flex justify-between mt-2 gap-1">
+                  <button type="button" class="btnQuickRatio px-1.5 py-0.5 bg-white/5 hover:bg-white/20 text-[9px] text-neutral-300 border border-white/10" data-ratio="auto">auto</button>
+                  <button type="button" class="btnQuickRatio px-1.5 py-0.5 bg-white/5 hover:bg-white/20 text-[9px] text-neutral-300 border border-white/10" data-ratio="1:1">1:1</button>
+                  <button type="button" class="btnQuickRatio px-1.5 py-0.5 bg-white/5 hover:bg-white/20 text-[9px] text-neutral-300 border border-white/10" data-ratio="4:3">4:3</button>
+                  <button type="button" class="btnQuickRatio px-1.5 py-0.5 bg-white/5 hover:bg-white/20 text-[9px] text-neutral-300 border border-white/10" data-ratio="16:9">16:9</button>
+                </div>
+              </div>
+            </div>`;
+        } else if (modDef.id === 'pbr') {
+          formHtml = `
+            <div class="p-3.5 space-y-3 border-t border-white/10 bg-black/50">
+              <div>
+                <div class="flex justify-between text-[10px] text-neutral-400 tracking-widest uppercase mb-1"><span>金屬度 (PBR_M)</span><span class="val-PBR_M font-mono text-white">${item.PBR_M}</span></div>
+                <input type="range" min="0" max="1" step="0.05" data-field="PBR_M" value="${item.PBR_M}" class="mod-input w-full">
+              </div>
+              <div>
+                <div class="flex justify-between text-[10px] text-neutral-400 tracking-widest uppercase mb-1"><span>高光度 (PBR_S)</span><span class="val-PBR_S font-mono text-white">${item.PBR_S}</span></div>
+                <input type="range" min="0" max="1" step="0.05" data-field="PBR_S" value="${item.PBR_S}" class="mod-input w-full">
+              </div>
+              <div>
+                <div class="flex justify-between text-[10px] text-neutral-400 tracking-widest uppercase mb-1"><span>粗糙度 (PBR_R)</span><span class="val-PBR_R font-mono text-white">${item.PBR_R}</span></div>
+                <input type="range" min="0" max="1" step="0.05" data-field="PBR_R" value="${item.PBR_R}" class="mod-input w-full">
+              </div>
+            </div>`;
+        } else if (modDef.id === 'ml') {
+          formHtml = `
+            <div class="p-3.5 space-y-2.5 border-t border-white/10 bg-black/50">
+              <div class="space-y-2">
+                <label class="block text-[9px] tracking-widest text-neutral-500 uppercase">快速套用範例（可再修改）</label>
+                <div class="flex gap-1.5">
+                  <select class="mlPreset flex-1 min-w-0 bg-black border border-white/10 px-2 py-1.5 text-[10px] text-neutral-300">
+                    <option value="museum">展覽作品牌</option><option value="minimal">極簡標題</option><option value="details">作品資訊卡</option><option value="bilingual">中英雙語</option><option value="blank">清空內容</option>
+                  </select>
+                  <button type="button" class="btnApplyML px-2.5 py-1.5 border border-white/20 text-[10px] hover:bg-white hover:text-black">套用</button>
+                </div>
+                <p class="text-[9px] leading-relaxed text-neutral-500">套用會取代目前 ML 文字；建議先複製需要保留的內容。</p>
+              </div>
+              <div class="flex flex-wrap gap-1.5 mb-1">
+                <button type="button" class="btnTagInline px-2 py-1 bg-white/10 text-[9px] text-neutral-300 hover:bg-white hover:text-black transition" data-opentag="<h1>" data-closetag="</h1>">&lt;&gt;h1</button>
+                <button type="button" class="btnTagInline px-2 py-1 bg-white/10 text-[9px] text-neutral-300 hover:bg-white hover:text-black transition" data-opentag="<p>" data-closetag="</p>">&lt;p&gt;</button>
+                <button type="button" class="btnTagInline px-2 py-1 bg-white/10 text-[9px] text-neutral-300 hover:bg-white hover:text-black transition" data-opentag="<->" data-closetag="">&lt;-&gt;</button>
+                <button type="button" class="btnTagInline px-2 py-1 bg-white/10 text-[9px] text-neutral-300 hover:bg-white hover:text-black transition" data-opentag="<*>" data-closetag="">&lt;*&gt;</button>
+                <button type="button" class="btnTagInline px-2 py-1 bg-white/10 text-[9px] text-neutral-300 hover:bg-white hover:text-black transition" data-opentag="<color=#FFFFFF>" data-closetag="</color>">&lt;color&gt;</button>
+              </div>
+              <textarea data-field="ML" rows="7" placeholder="<color=#FFFFFF><h1>作品標題</h1>" class="mod-input w-full bg-black/80 border border-white/10 rounded-none px-2.5 py-1.5 text-neutral-200 focus:outline-none font-mono text-[11px] resize-y leading-relaxed">${escapeHtml(item.ML)}</textarea>
+            </div>`;
+        } else if (modDef.id === 'code') {
+          formHtml = `
+            <div class="p-3.5 border-t border-white/10 bg-black/50">
+              <input type="text" data-field="code" value="${escapeHtml(item.code)}" placeholder="rotation=0+=1" class="mod-input w-full bg-black/80 border border-white/10 rounded-none px-2.5 py-1.5 text-neutral-200 focus:outline-none font-mono text-[11px]">
+            </div>`;
+        }
+      }
+
+      card.innerHTML = `
+        <div class="p-3 flex items-center justify-between cursor-pointer select-none border-l-2 ${isExpanded ? 'border-white bg-white/5' : 'border-transparent'}" onclick="toggleExpandModule('${modDef.id}')">
+          <div class="flex items-center space-x-2.5">
+            <i class="fa-solid fa-grip-vertical text-neutral-600 drag-handle cursor-grab active:cursor-grabbing hover:text-neutral-300 text-xs" onclick="event.stopPropagation()"></i>
+            <i class="${modDef.icon} text-xs"></i>
+            <span class="font-light tracking-wider text-neutral-200 text-xs uppercase">${modDef.name}</span>
+          </div>
+          <div class="flex items-center space-x-1">
+            <button type="button" title="上移模組" onclick="event.stopPropagation(); moveModule('${modDef.id}', -1)" class="text-neutral-500 hover:text-white p-1"><i class="fa-solid fa-chevron-up text-[9px]"></i></button>
+            <button type="button" title="下移模組" onclick="event.stopPropagation(); moveModule('${modDef.id}', 1)" class="text-neutral-500 hover:text-white p-1"><i class="fa-solid fa-chevron-down text-[9px]"></i></button>
+            <button type="button" title="－ 立即停用模組" aria-label="停用 ${escapeHtml(modDef.name)} 模組" onclick="event.stopPropagation(); toggleModuleDisable('${modDef.id}')" class="no-drag text-neutral-500 hover:text-red-400 hover:bg-red-400/10 transition p-1.5 rounded-sm"><i class="fa-solid fa-circle-minus text-xs"></i></button>
+            <i class="fa-solid fa-chevron-${isExpanded ? 'up' : 'down'} text-[9px] text-neutral-500"></i>
+          </div>
+        </div>${formHtml}`;
+
+      if (isExpanded) {
+        // Sync Inputs & Sliders
+        const syncSize = (val) => {
+          item.size = String(val);
+          const slider = card.querySelector('input[data-field="size_slider"]');
+          const num = card.querySelector('input[data-field="size_num"]');
+          if (slider) slider.value = val;
+          if (num) num.value = val;
+          updatePreviewStyles();
+        };
+
+        const syncRot = (val) => {
+          item.rotation = String(val);
+          const slider = card.querySelector('input[data-field="rotation_slider"]');
+          const num = card.querySelector('input[data-field="rotation_num"]');
+          if (slider) slider.value = val;
+          if (num) num.value = val;
+          updatePreviewStyles();
+        };
+
+        const syncRatio = () => {
+          const isAuto = card.querySelector('.radioRatioAuto')?.checked;
+          const ctrls = card.querySelector('#ratioCustomControls');
+          const valLabel = card.querySelector('.val-aspect_ratio');
+
+          if (isAuto) {
+            item.aspect_ratio = 'auto';
+            if (ctrls) ctrls.classList.add('opacity-40', 'pointer-events-none');
+            if (valLabel) valLabel.innerText = 'auto';
+          } else {
+            if (ctrls) ctrls.classList.remove('opacity-40', 'pointer-events-none');
+            const rw = card.querySelector('input[data-field="ratio_w"]')?.value || '1';
+            const rh = card.querySelector('input[data-field="ratio_h"]')?.value || '1';
+            item.aspect_ratio = `${rw}:${rh}`;
+            if (valLabel) valLabel.innerText = item.aspect_ratio;
+          }
+          updatePreviewStyles();
+        };
+
+        card.querySelectorAll('.mod-input, input[type="number"], input[type="range"]').forEach(input => {
+          input.addEventListener('input', () => {
+            const field = input.getAttribute('data-field');
+            if (field === 'size_slider' || field === 'size_num') syncSize(input.value);
+            else if (field === 'rotation_slider' || field === 'rotation_num') syncRot(input.value);
+            else if (field === 'ratio_w' || field === 'ratio_h') syncRatio();
+            else {
+              item[field] = input.value;
+              if (['PBR_M', 'PBR_S', 'PBR_R'].includes(field)) {
+                const valElem = card.querySelector(`.val-${field}`);
+                if (valElem) valElem.innerText = input.value;
+              }
+            }
+            updatePreviewStyles();
+            if (field === 'ML') renderMLCard(item.activeModules.includes('ml') ? item.ML : '');
+          });
+        });
+
+        card.querySelectorAll('input[name="ratio_type"]').forEach(r => {
+          r.addEventListener('change', syncRatio);
+        });
+
+        card.querySelectorAll('.btnQuickRatio').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const targetRatio = btn.getAttribute('data-ratio');
+            if (targetRatio === 'auto') {
+              const rAuto = card.querySelector('.radioRatioAuto');
+              if (rAuto) rAuto.checked = true;
+            } else {
+              const rCustom = card.querySelector('.radioRatioCustom');
+              if (rCustom) rCustom.checked = true;
+              const parts = targetRatio.split(':');
+              const rwInput = card.querySelector('input[data-field="ratio_w"]');
+              const rhInput = card.querySelector('input[data-field="ratio_h"]');
+              if (rwInput) rwInput.value = parts[0];
+              if (rhInput) rhInput.value = parts[1];
+            }
+            syncRatio();
+          });
+        });
+
+        card.querySelectorAll('.btnResetField').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const field = btn.getAttribute('data-field');
+            const defVal = btn.getAttribute('data-default');
+            if (field === 'size') syncSize(defVal);
+            if (field === 'rotation') syncRot(defVal);
+          });
+        });
+
+        card.querySelectorAll('.btnQuickRot').forEach(btn => {
+          btn.addEventListener('click', () => syncRot(btn.getAttribute('data-rot')));
+        });
+
+        card.querySelectorAll('.btnTagInline').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const openTag = btn.getAttribute('data-opentag');
+            const closeTag = btn.getAttribute('data-closetag') || '';
+            const ta = card.querySelector('textarea[data-field="ML"]');
+            if (ta) insertMLTag(ta, openTag, closeTag);
+          });
+        });
+
+        const applyPreset = card.querySelector('.btnApplyML');
+        if (applyPreset) applyPreset.addEventListener('click', () => {
+          const preset = card.querySelector('.mlPreset')?.value || 'museum';
+          const safeTitle = escapeHtml(item.title || '作品標題');
+          const safeInfo = escapeHtml(item.info || '在此輸入作品介紹與觀展提示。');
+          const samples = {
+            museum: '<color=#FFFFFF><h1>' + safeTitle + '</h1></color>\n<p>' + safeInfo + '</p>\n<->\n<p>媒材｜請填寫媒材</p>\n<p>年份｜請填寫年份</p>',
+            minimal: '<h1>' + safeTitle + '</h1>\n<p>' + escapeHtml(item.info || '一句話介紹作品。') + '</p>',
+            details: '<color=#FFFFFF><h1>' + safeTitle + '</h1></color>\n<->\n<h2>作品資訊</h2>\n<p>媒材｜</p>\n<p>尺寸｜</p>\n<p>年份｜</p>\n<p>策展／藝術家｜</p>',
+            bilingual: '<h1>' + safeTitle + '</h1>\n<p>' + escapeHtml(item.info || '中文作品介紹。') + '</p>\n<->\n<h2>English</h2>\n<p>Write the artwork description in English.</p>',
+            blank: ''
+          };
+          const ta = card.querySelector('textarea[data-field="ML"]');
+          if (!ta) return;
+          if (ta.value.trim() && !window.confirm('套用範例會取代目前的 ML 內容，確定繼續？')) return;
+          ta.value = samples[preset] ?? samples.museum;
+          ta.dispatchEvent(new Event('input', { bubbles: true }));
+          ta.focus();
+          showToast('已套用 ML 範例，可直接修改文字', 'success');
+        });
+      }
+      return card;
+    }
+
+    function createInactiveModuleCard(modDef) {
+      const card = document.createElement('div');
+      card.dataset.id = modDef.id;
+      card.className = "p-3 glass-panel border border-white/5 hover:border-white/20 rounded-none flex items-center justify-between cursor-grab active:cursor-grabbing text-neutral-400 transition group hover:text-white module-card";
+      card.innerHTML = `
+        <div class="flex items-center space-x-2.5">
+          <i class="fa-solid fa-grip-vertical text-neutral-700 drag-handle cursor-grab group-hover:text-neutral-500 text-xs"></i>
+          <i class="${modDef.icon} opacity-60 group-hover:opacity-100 text-xs"></i>
+          <span class="text-xs font-light tracking-wider uppercase">${modDef.name}</span>
+        </div>
+        <button type="button" title="＋ 立即啟用模組" aria-label="啟用 ${escapeHtml(modDef.name)} 模組" onclick="event.stopPropagation(); toggleModuleEnable('${modDef.id}')" class="no-drag text-neutral-600 hover:text-emerald-300 hover:bg-emerald-300/10 transition p-1.5 rounded-sm"><i class="fa-solid fa-circle-plus text-xs"></i></button>
+      `;
+      return card;
+    }
+
+    window.moveModule = (modId, delta) => {
+      if (selectedIndex === -1) return;
+      const mods = items[selectedIndex].activeModules || [];
+      const from = mods.indexOf(modId), to = from + delta;
+      if (from < 0 || to < 0 || to >= mods.length) return;
+      [mods[from], mods[to]] = [mods[to], mods[from]];
+      items[selectedIndex].activeModules = mods;
+      renderModulesPanel(items[selectedIndex]);
+      renderMLCard(mods.includes('ml') ? items[selectedIndex].ML : '');
+    };
+
+    window.toggleExpandModule = (modId) => {
+      expandedModuleId = (expandedModuleId === modId) ? null : modId;
+      if (selectedIndex !== -1) renderModulesPanel(items[selectedIndex]);
+    };
+
+    function refreshAfterModuleToggle(item, modId, enabled) {
+      if (!item) return;
+      item.activeModules = Array.from(new Set((item.activeModules || []).filter(id => MODULE_DEFINITIONS[id])));
+      if (enabled) expandedModuleId = modId;
+      else if (expandedModuleId === modId) expandedModuleId = item.activeModules[0] || null;
+      renderModulesPanel(item);
+      renderMLCard(item.activeModules.includes('ml') ? item.ML : '');
+      const name = MODULE_DEFINITIONS[modId]?.name || modId;
+      showToast(`${name} 已${enabled ? '啟用' : '停用'}`, 'success');
+    }
+
+    window.toggleModuleEnable = (modId) => {
+      if (selectedIndex === -1 || !MODULE_DEFINITIONS[modId]) return;
+      const item = items[selectedIndex];
+      item.activeModules = item.activeModules || [];
+      if (!item.activeModules.includes(modId)) item.activeModules.push(modId);
+      refreshAfterModuleToggle(item, modId, true);
+    };
+
+    window.toggleModuleDisable = (modId) => {
+      if (selectedIndex === -1 || !MODULE_DEFINITIONS[modId]) return;
+      const item = items[selectedIndex];
+      item.activeModules = (item.activeModules || []).filter(id => id !== modId);
+      refreshAfterModuleToggle(item, modId, false);
+    };
+
+    function handleModuleStateChange() {
+      if (selectedIndex === -1) return;
+      const item = items[selectedIndex];
+      const validIds = new Set(Object.keys(MODULE_DEFINITIONS));
+      const newActiveMods = Array.from(D.activeModulesList.querySelectorAll(':scope > [data-id]'))
+        .map(card => card.dataset.id).filter((id, index, arr) => validIds.has(id) && arr.indexOf(id) === index);
+      item.activeModules = newActiveMods;
+      if (!item.activeModules.includes(expandedModuleId)) expandedModuleId = item.activeModules[0] || null;
+      renderModulesPanel(item);
+      renderMLCard(item.activeModules.includes('ml') ? item.ML : '');
+    }
+
+    function renderSlideList() {
+      D.itemCount.innerText = items.length;
+      D.slideList.innerHTML = '';
+      
+      items.forEach((item, index) => {
+        const div = document.createElement('div');
+        const isActive = index === selectedIndex;
+        div.className = `p-2.5 cursor-pointer flex items-center space-x-3 transition border ${isActive ? 'bg-white/10 border-white text-white shadow-lg' : 'bg-black/30 border-white/5 text-neutral-400 hover:bg-white/5 hover:text-neutral-200'}`;
+        div.onclick = () => selectItem(index);
+        
+        let thumb = `<div class="w-10 h-10 bg-black/60 border border-white/10 flex items-center justify-center text-neutral-600 shrink-0"><i class="fa-solid fa-film text-xs"></i></div>`;
+        if (!item.type.includes('video') && item.blobUrl) {
+          thumb = `<img src="${item.blobUrl}" class="w-10 h-10 object-cover border border-white/10 bg-black shrink-0">`;
+        }
+
+        const titleText = escapeHtml((item.title || item.url.split('/').pop() || 'Untitled').substring(0, 16));
+        const levelText = escapeHtml(item.level || '0');
+        div.innerHTML = `
+          <i class="slide-drag-handle fa-solid fa-grip-vertical text-neutral-600 hover:text-white cursor-grab active:cursor-grabbing text-[10px] px-1" title="拖曳排序" onclick="event.stopPropagation()"></i>
+          ${thumb}
+          <div class="flex-1 min-w-0">
+            <div class="text-xs font-light tracking-wider truncate">${titleText}</div>
+            <div class="text-[9px] text-neutral-500 font-mono mt-0.5 uppercase tracking-widest">LEVEL: ${levelText}</div>
+          </div>
+          <div class="flex flex-col gap-0.5 shrink-0">
+            <button type="button" title="作品上移" class="slideMoveUp text-neutral-500 hover:text-white px-1" ${index === 0 ? 'disabled' : ''}><i class="fa-solid fa-chevron-up text-[9px]"></i></button>
+            <button type="button" title="作品下移" class="slideMoveDown text-neutral-500 hover:text-white px-1" ${index === items.length - 1 ? 'disabled' : ''}><i class="fa-solid fa-chevron-down text-[9px]"></i></button>
+          </div>
+        `;
+        div.querySelector('.slideMoveUp').addEventListener('click', (ev) => { ev.stopPropagation(); moveSlide(index, -1); });
+        div.querySelector('.slideMoveDown').addEventListener('click', (ev) => { ev.stopPropagation(); moveSlide(index, 1); });
+        D.slideList.appendChild(div);
+      });
+      D.slideIndexText.innerText = items.length > 0 ? `${selectedIndex + 1} / ${items.length}` : "0 / 0";
+    }
+
+    function moveSlide(index, delta) {
+      const target = index + delta;
+      if (target < 0 || target >= items.length) return;
+      const moved = items.splice(index, 1)[0];
+      items.splice(target, 0, moved);
+      selectItem(target);
+    }
+
+    function selectItem(index) {
+      if (index < 0 || index >= items.length) {
+        selectedIndex = -1;
+        D.emptyState.classList.remove('hidden');
+        D.mediaWrapper.classList.add('hidden');
+        D.mlCardWrapper.classList.add('hidden');
+        renderModulesPanel(null);
+        renderSlideList();
+        return;
+      }
+
+      selectedIndex = index;
+      renderSlideList();
+      playMotion(D.slideList.children[index], 'selection');
+      const item = items[selectedIndex];
+
+      D.emptyState.classList.add('hidden');
+      D.mediaWrapper.classList.remove('hidden');
+      D.previewFileName.innerText = item.url.split('/').pop();
+      D.previewLevelBadge.innerText = `LEVEL: ${item.level}`;
+
+      if (item.type.includes('video')) {
+        D.imgPreview.classList.add('hidden');
+        D.videoPreview.classList.remove('hidden');
+        D.videoPreview.src = item.blobUrl || item.url;
+      } else {
+        D.videoPreview.classList.add('hidden');
+        D.imgPreview.classList.remove('hidden');
+        D.imgPreview.src = item.blobUrl || item.url;
+      }
+
+      updatePreviewStyles();
+      const activeMedia = item.type.includes('video') ? D.videoPreview : D.imgPreview;
+      playMotion(activeMedia, 'media');
+      renderMLCard(item.activeModules.includes('ml') ? item.ML : '', true);
+
+      D.fieldUrl.value = item.url || '';
+      D.fieldType.value = item.type || 'image/jpeg';
+      D.fieldLevel.value = item.level || '0';
+
+      if (!expandedModuleId && item.activeModules.length > 0) {
+        expandedModuleId = item.activeModules[0];
+      }
+      renderModulesPanel(item);
+    }
+
+    function updatePreviewStyles() {
+      if (selectedIndex === -1 || !items[selectedIndex]) return;
+      const item = items[selectedIndex];
+      if (!D.mediaWrapper) return;
+      
+      // 1. Rotation: positive -> counter-clockwise (deg = -rotation)
+      const rot = parseFloat(item.rotation) || 0;
+      const cssRotation = -rot;
+
+      // 2. Size: size=1 -> 200% size, size=-1 -> 50% size
+      const sizeVal = parseFloat(item.size) || 0;
+      const scale = sizeVal >= 0 ? (1 + sizeVal) : (1 / (1 + Math.abs(sizeVal)));
+
+      D.mediaWrapper.style.transform = `rotate(${cssRotation}deg) scale(${scale})`;
+
+      // 3. Aspect Ratio Center Crop
+      const ratioVal = item.aspect_ratio || 'auto';
+      const container = D.previewContainer || D.mediaWrapper.parentElement;
+      const maxW = container ? (container.clientWidth || 600) * 0.7 : 400;
+      const maxH = container ? (container.clientHeight || 400) * 0.7 : 300;
+
+      if (ratioVal === 'auto') {
+        D.mediaWrapper.style.width = 'auto';
+        D.mediaWrapper.style.height = 'auto';
+        D.mediaWrapper.style.maxHeight = '50vh';
+        D.mediaWrapper.style.maxWidth = '60vw';
+        D.mediaWrapper.style.aspectRatio = 'auto';
+      } else {
+        D.mediaWrapper.style.maxHeight = 'none';
+        D.mediaWrapper.style.maxWidth = 'none';
+        
+        let wRatio = 1, hRatio = 1;
+        if (ratioVal.includes(':')) {
+          const parts = ratioVal.split(':');
+          wRatio = parseFloat(parts[0]) || 1;
+          hRatio = parseFloat(parts[1]) || 1;
+        }
+
+        D.mediaWrapper.style.aspectRatio = `${wRatio} / ${hRatio}`;
+
+        if (maxW / maxH > wRatio / hRatio) {
+          D.mediaWrapper.style.height = `${maxH}px`;
+          D.mediaWrapper.style.width = `${maxH * (wRatio / hRatio)}px`;
+        } else {
+          D.mediaWrapper.style.width = `${maxW}px`;
+          D.mediaWrapper.style.height = `${maxW * (hRatio / wRatio)}px`;
+        }
+      }
+    }
+
+    function renderMLCard(mlString, shouldAnimate = false) {
+      if (!mlString || mlString.trim() === '') {
+        D.mlCardWrapper.classList.add('hidden');
+        return;
+      }
+      const wasHidden = D.mlCardWrapper.classList.contains('hidden');
+      D.mlCardWrapper.classList.remove('hidden');
+      let html = mlString
+        .replace(/<color=#([A-Fa-f0-9]+)>/g, '<div style="color: #$1">')
+        .replace(/<\/color>/g, '</div>')
+        .replace(/<->/g, '<hr class="my-2 border-white/20">')
+        .replace(/<\*>/g, '<hr class="my-2 border-white/20 border-dashed">')
+        .replace(/<\\n>/g, '<br>');
+      
+      const openDivs = (html.match(/<div/g) || []).length;
+      const closeDivs = (html.match(/<\/div>/g) || []).length;
+      for (let i = 0; i < (openDivs - closeDivs); i++) html += '</div>';
+
+      D.mlCardContent.innerHTML = window.DOMPurify
+        ? DOMPurify.sanitize(html, { ALLOWED_TAGS: ['div','h1','h2','h3','p','hr','br','span','strong','em'], ALLOWED_ATTR: ['style','class'] })
+        : escapeHtml(mlString);
+      if (shouldAnimate || wasHidden) playMotion(D.mlCardWrapper, 'ml');
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    [D.fieldUrl, D.fieldType, D.fieldLevel].forEach(el => {
+      el.addEventListener('input', () => {
+        if (selectedIndex === -1) return;
+        const item = items[selectedIndex];
+        const previousUrl = item.url;
+        item.url = D.fieldUrl.value;
+        item.type = D.fieldType.value;
+        item.level = D.fieldLevel.value;
+        D.previewLevelBadge.innerText = `LEVEL: ${item.level}`;
+        if (previousUrl !== item.url && !item.localFile) {
+          if (item.type.includes('video')) {
+            D.imgPreview.classList.add('hidden'); D.videoPreview.classList.remove('hidden');
+            D.videoPreview.src = item.url;
+          } else {
+            D.videoPreview.classList.add('hidden'); D.imgPreview.classList.remove('hidden');
+            D.imgPreview.src = item.url;
+          }
+        }
+        renderSlideList();
+      });
+    });
+
+    D.btnPrevSlide.onclick = () => { if (items.length > 0) selectItem((selectedIndex - 1 + items.length) % items.length); };
+    D.btnNextSlide.onclick = () => { if (items.length > 0) selectItem((selectedIndex + 1) % items.length); };
+    
+    D.btnDeleteCurrent.onclick = async () => {
+      if (selectedIndex > -1) {
+        const result = await LumiereSwal.fire({
+          title: '確認刪除作品',
+          text: '確定要刪除當前所選的作品項目嗎？此動作無法復原。',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonText: '確認刪除',
+          cancelButtonText: '取消'
+        });
+        
+        if (result.isConfirmed) {
+          items.splice(selectedIndex, 1);
+          selectItem(items.length > 0 ? 0 : -1);
+          showToast('已成功刪除作品項目', 'success');
+        }
+      }
+    };
+
+    document.addEventListener('keydown', (e) => {
+      const tag = (e.target.tagName || '').toUpperCase();
+      const typing = ['INPUT', 'TEXTAREA', 'SELECT'].includes(tag) || e.target.isContentEditable;
+      if (typing) return;
+      if (e.key === 'ArrowUp' || e.key === 'PageUp') { e.preventDefault(); D.btnPrevSlide.click(); }
+      if (e.key === 'ArrowDown' || e.key === 'PageDown') { e.preventDefault(); D.btnNextSlide.click(); }
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'd') {
+        e.preventDefault(); document.getElementById('btnDuplicate').click();
+      }
+      if (e.key === 'Delete' && selectedIndex >= 0) D.btnDeleteCurrent.click();
+    });
+
+    document.getElementById('btnOpenGlobal').onclick = () => {
+      document.getElementById('modalGlobal').classList.replace('hidden', 'flex');
+      renderGlobalLevelsList();
+    };
+    document.getElementById('btnCloseGlobal').onclick = () => animateOut(document.getElementById('modalGlobal'), () => document.getElementById('modalGlobal').classList.replace('flex', 'hidden'), 'modal');
+
+    function renderGlobalLevelsList() {
+      const container = document.getElementById('globalLevelsList');
+      container.innerHTML = '';
+      levels.forEach((lvl, idx) => {
+        const div = document.createElement('div');
+        div.className = "bg-black/60 border border-white/10 p-4 space-y-3 text-xs relative";
+        div.innerHTML = `
+          <div class="flex items-center justify-between">
+            <span class="font-light tracking-widest text-white uppercase text-[10px]">樓層 ID: <input type="text" value="${escapeHtml(lvl.g_level)}" class="lvl-id bg-black border border-white/20 rounded-none px-2 py-0.5 w-16 text-center text-white font-mono"></span>
+            ${levels.length > 1 ? `<button type="button" onclick="removeLevel(${idx})" class="text-neutral-500 hover:text-red-400"><i class="fa-solid fa-trash-can"></i></button>` : ''}
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-neutral-400 text-[9px] tracking-widest uppercase mb-1">樓層標題 (G_TITLE)</label>
+              <input type="text" value="${escapeHtml(lvl.g_title)}" class="lvl-title w-full bg-black/80 border border-white/10 rounded-none px-2.5 py-1 text-white text-xs">
+            </div>
+            <div>
+              <label class="block text-neutral-400 text-[9px] tracking-widest uppercase mb-1">副標題 (G_SUBTITLE)</label>
+              <input type="text" value="${escapeHtml(lvl.g_subtitle)}" class="lvl-subtitle w-full bg-black/80 border border-white/10 rounded-none px-2.5 py-1 text-white text-xs">
+            </div>
+          </div>
+          <div>
+            <label class="block text-neutral-400 text-[9px] tracking-widest uppercase mb-1">背景音樂 URL (MUSIC)</label>
+            <input type="text" value="${escapeHtml(lvl.music)}" class="lvl-music w-full bg-black/80 border border-white/10 rounded-none px-2.5 py-1 text-white font-mono text-xs">
+          </div>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    document.getElementById('btnAddLevel').onclick = () => {
+      levels.push({ g_level: String(levels.length), g_title: `第 ${levels.length} 展廳`, g_subtitle: "", music: "" });
+      renderGlobalLevelsList();
+    };
+
+    window.removeLevel = async (idx) => {
+      const result = await LumiereSwal.fire({
+        title: '刪除樓層',
+        text: '確定要移除此樓層設定嗎？',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: '刪除',
+        cancelButtonText: '取消'
+      });
+      
+      if (result.isConfirmed) {
+        levels.splice(idx, 1);
+        renderGlobalLevelsList();
+        showToast('已成功移除樓層', 'success');
+      }
+    };
+
+    document.getElementById('btnSaveGlobal').onclick = () => {
+      const container = document.getElementById('globalLevelsList');
+      const cards = container.children;
+      for (let i = 0; i < cards.length; i++) {
+        levels[i].g_level = cards[i].querySelector('.lvl-id').value;
+        levels[i].g_title = cards[i].querySelector('.lvl-title').value;
+        levels[i].g_subtitle = cards[i].querySelector('.lvl-subtitle').value;
+        levels[i].music = cards[i].querySelector('.lvl-music').value;
+      }
+      animateOut(document.getElementById('modalGlobal'), () => document.getElementById('modalGlobal').classList.replace('flex', 'hidden'), 'modal');
+      showToast('樓層資訊設定已成功更新', 'success');
+    };
+
+    document.getElementById('btnExport').onclick = () => {
+      document.getElementById('modalExport').classList.replace('hidden', 'flex');
+      generateJsonOutput();
+    };
+    document.getElementById('btnCloseExport').onclick = () => animateOut(document.getElementById('modalExport'), () => document.getElementById('modalExport').classList.replace('flex', 'hidden'), 'modal');
+    document.querySelectorAll('input[name="exportMode"]').forEach(radio => radio.addEventListener('change', generateJsonOutput));
+
+    function getExportJsonString() {
+      const isLocal = document.querySelector('input[name="exportMode"]:checked').value === 'local';
+      const result = levels.map(l => ({ g_level: String(l.g_level), g_title: l.g_title, g_subtitle: l.g_subtitle, ...(l.music ? { music: l.music } : {}) }));
+      
+      items.forEach(item => {
+        const itemObj = {};
+        if (isLocal) {
+          let filename = item.url;
+          if (filename.startsWith('/')) filename = filename.substring(1);
+          itemObj.file = filename;
+        } else {
+          itemObj.url = item.url;
+        }
+        itemObj.type = item.type;
+        if (item.level && item.level !== "0") itemObj.g_level = item.level;
+
+        const activeMods = new Set(item.activeModules || []);
+        if (activeMods.has('title_info')) { if (item.title) itemObj.title = item.title; if (item.info) itemObj.info = item.info; }
+        if (activeMods.has('transform')) {
+          if (item.size !== undefined && item.size !== "0") itemObj.size = String(item.size);
+          if (item.rotation !== undefined && item.rotation !== "0") itemObj.rotation = String(item.rotation);
+          if (item.aspect_ratio && item.aspect_ratio !== "auto") itemObj.aspect_ratio = item.aspect_ratio;
+        }
+        if (activeMods.has('pbr')) {
+          if (item.PBR_M && item.PBR_M !== "0.0") itemObj.PBR_M = item.PBR_M;
+          if (item.PBR_S && item.PBR_S !== "0.4") itemObj.PBR_S = item.PBR_S;
+          if (item.PBR_R && item.PBR_R !== "1.0") itemObj.PBR_R = item.PBR_R;
+        }
+        if (activeMods.has('ml') && item.ML) itemObj.ML = item.ML;
+        if (activeMods.has('code') && item.code) itemObj.code = item.code;
+        
+        result.push(itemObj);
+      });
+      return JSON.stringify(result, null, 2);
+    }
+
+    function generateJsonOutput() {
+      const isLocal = document.querySelector('input[name="exportMode"]:checked').value === 'local';
+      document.getElementById('downloadBtnText').innerText = isLocal ? '下載 CUSTOM.JSON' : '下載 MANIFEST.JSON';
+      document.getElementById('jsonOutput').value = getExportJsonString();
+    }
+
+    document.getElementById('btnCopyJson').onclick = () => {
+      const out = document.getElementById('jsonOutput');
+      out.select();
+      try {
+        document.execCommand('copy');
+        showToast('已成功複製 JSON 至剪貼簿', 'success');
+      } catch (err) {
+        showToast('複製失敗，請手動選取複製', 'error');
+      }
+    };
+
+    document.getElementById('btnDownloadManifest').onclick = () => {
+      const isLocal = document.querySelector('input[name="exportMode"]:checked').value === 'local';
+      const filename = isLocal ? 'custom.json' : 'manifest.json';
+      const content = getExportJsonString();
+
+      try {
+        const blob = new Blob([content], { type: 'application/json;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        a.style.display = 'none';
+        document.body.appendChild(a);
+        a.click();
+        setTimeout(() => {
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+        }, 1000);
+        showToast(`已成功下載 ${filename}！`, 'success');
+        animateOut(document.getElementById('modalExport'), () => document.getElementById('modalExport').classList.replace('flex', 'hidden'), 'modal');
+      } catch (ex) {
+        showToast('下載失敗，請複製文字框內容', 'error');
+      }
+    };
+
+    function initMotionSystem() {
+      if (isReducedMotion()) return;
+      if (window.gsap) {
+        gsap.timeline({ defaults: { ease: 'power3.out' } })
+          .fromTo('.motion-header', { y: -10, opacity: 0 }, { y: 0, opacity: 1, duration: 0.42, clearProps: 'transform,opacity' }, 0)
+          .fromTo('.workspace-sidebar-left', { x: -12, opacity: 0 }, { x: 0, opacity: 1, duration: 0.48, clearProps: 'transform,opacity' }, 0.04)
+          .fromTo('.workspace-stage', { opacity: 0, filter: 'blur(3px)' }, { opacity: 1, filter: 'blur(0px)', duration: 0.56, clearProps: 'filter,opacity' }, 0.08)
+          .fromTo('.workspace-sidebar-right', { x: 12, opacity: 0 }, { x: 0, opacity: 1, duration: 0.48, clearProps: 'transform,opacity' }, 0.1);
+      } else {
+        document.body.classList.add('motion-fallback-ready');
+      }
+    }
+
+    initMotionSystem();
+
+    function showToast(message, type = 'success') {
+      LumiereSwal.fire({
+        toast: true,
+        position: 'bottom-end',
+        icon: type,
+        title: message,
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        customClass: {
+          popup: 'bg-[#0a0a0c] border border-white/15 text-neutral-200 rounded-none shadow-xl text-xs font-sans',
+          title: 'text-neutral-200 text-xs font-light tracking-wider'
+        }
+      });
+    }
+  </script>
+</body>
+</html>
